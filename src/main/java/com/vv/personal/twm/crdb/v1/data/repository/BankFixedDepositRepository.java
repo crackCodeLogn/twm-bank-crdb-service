@@ -1,9 +1,8 @@
-package twm.crdb.v1.data.repository;
+package com.vv.personal.twm.crdb.v1.data.repository;
 
+import com.vv.personal.twm.crdb.v1.data.entity.BankFixedDepositEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import twm.crdb.v1.data.entity.BankEntity;
-import twm.crdb.v1.data.entity.BankFixedDepositEntity;
 
 /**
  * @author Vivek

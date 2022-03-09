@@ -1,11 +1,11 @@
-package twm.crdb.v1.data.entity;
+package com.vv.personal.twm.crdb.v1.data.entity;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-import org.springframework.context.annotation.Primary;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.Table;
 import java.sql.Date;
 import java.time.Instant;
@@ -18,7 +18,7 @@ import java.time.Instant;
 @Table(name = "bank_fd")
 public class BankFixedDepositEntity {
 
-    @Primary
+    @Id
     @Column(name = "fd_number")
     private String fdNumber;
 
@@ -46,6 +46,12 @@ public class BankFixedDepositEntity {
     @Column(name = "months")
     private Integer months;
 
+    @Column(name = "days")
+    private Integer days;
+
+    @Column(name = "type_interest")
+    private String interestType;
+
     @Column(name = "nominee")
     private String nominee;
 
@@ -57,6 +63,9 @@ public class BankFixedDepositEntity {
 
     @Column(name = "orig_user_fd")
     private String originalUserFd;
+
+    @Column(name = "is_active")
+    private Boolean isActive;
 
     @Column(name = "cre_ts")
     private Instant createdTimestamp;
@@ -76,10 +85,13 @@ public class BankFixedDepositEntity {
                 .append("startDate", startDate)
                 .append("endDate", endDate)
                 .append("months", months)
+                .append("days", days)
+                .append("interestType", interestType)
                 .append("nominee", nominee)
                 .append("expectedAmount", expectedAmount)
                 .append("expectedInterest", expectedInterest)
                 .append("originalUserFd", originalUserFd)
+                .append("isActive", isActive)
                 .append("createdTimestamp", createdTimestamp)
                 .toString();
     }
@@ -165,6 +177,24 @@ public class BankFixedDepositEntity {
         return this;
     }
 
+    public Integer getDays() {
+        return days;
+    }
+
+    public BankFixedDepositEntity setDays(Integer days) {
+        this.days = days;
+        return this;
+    }
+
+    public String getInterestType() {
+        return interestType;
+    }
+
+    public BankFixedDepositEntity setInterestType(String interestType) {
+        this.interestType = interestType;
+        return this;
+    }
+
     public String getNominee() {
         return nominee;
     }
@@ -198,6 +228,15 @@ public class BankFixedDepositEntity {
 
     public BankFixedDepositEntity setOriginalUserFd(String originalUserFd) {
         this.originalUserFd = originalUserFd;
+        return this;
+    }
+
+    public Boolean isActive() {
+        return isActive;
+    }
+
+    public BankFixedDepositEntity setActive(Boolean active) {
+        isActive = active;
         return this;
     }
 

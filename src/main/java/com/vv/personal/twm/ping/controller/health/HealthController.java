@@ -1,4 +1,4 @@
-package twm.ping.controller.health;
+package com.vv.personal.twm.ping.controller.health;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;

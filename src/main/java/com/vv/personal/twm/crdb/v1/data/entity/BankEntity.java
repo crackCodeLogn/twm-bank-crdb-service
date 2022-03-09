@@ -1,11 +1,11 @@
-package twm.crdb.v1.data.entity;
+package com.vv.personal.twm.crdb.v1.data.entity;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-import org.springframework.context.annotation.Primary;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.Table;
 import java.time.Instant;
 
@@ -20,7 +20,7 @@ public class BankEntity {
     @Column(name = "name")
     private String bankName;
 
-    @Primary
+    @Id
     @Column(name = "ifsc")
     private String ifsc;
 
@@ -29,6 +29,9 @@ public class BankEntity {
 
     @Column(name = "bank_type")
     private String bankType;
+
+    @Column(name = "is_active")
+    private Boolean isActive;
 
     @Column(name = "cre_ts")
     private Instant createdTimestamp;
@@ -43,6 +46,7 @@ public class BankEntity {
                 .append("ifsc", ifsc)
                 .append("contactNumber", contactNumber)
                 .append("bankType", bankType)
+                .append("isActive", isActive)
                 .append("createdTimestamp", createdTimestamp)
                 .toString();
     }
@@ -80,6 +84,15 @@ public class BankEntity {
 
     public BankEntity setBankType(String bankType) {
         this.bankType = bankType;
+        return this;
+    }
+
+    public Boolean isActive() {
+        return isActive;
+    }
+
+    public BankEntity setActive(Boolean active) {
+        isActive = active;
         return this;
     }
 
