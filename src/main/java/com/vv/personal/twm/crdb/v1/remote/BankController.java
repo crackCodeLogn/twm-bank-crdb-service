@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -40,9 +41,28 @@ public class BankController {
     }
 
     @GetMapping("/banks")
-    public BankProto.BankList readAllBanks() {
-        log.info("Received request to read all banks from db");
-        return bank.getBanks();
+    public BankProto.BankList getBanks(@RequestParam("field") String field, //NAME, TYPE, IFSC, EMPTY - return all if EMPTY
+                                       @RequestParam(value = "value", required = false) String value) {
+        log.info("Received '{}' to list Banks for field '{}'", value, field);
+        BankProto.BankList.Builder banks = BankProto.BankList.newBuilder();
+        try {
+            switch (field) {
+                case "NAME":
+                    banks.addAllBanks(bank.getAllByName(value));
+                    break;
+                case "TYPE":
+                    banks.addAllBanks(bank.getAllByType(value));
+                    break;
+                case "IFSC":
+                    banks.addAllBanks(bank.getAllByIfsc(value));
+                    break;
+                default:
+                    banks.addAllBanks(bank.getBanks().getBanksList());
+            }
+        } catch (Exception e) {
+            log.error("Failed to list {}: {} from crdb! ", field, value, e);
+        }
+        return banks.build();
     }
 
     @DeleteMapping("/banks/{ifsc}")

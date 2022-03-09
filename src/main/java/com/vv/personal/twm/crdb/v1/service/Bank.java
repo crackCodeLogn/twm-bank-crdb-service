@@ -2,6 +2,8 @@ package com.vv.personal.twm.crdb.v1.service;
 
 import com.vv.personal.twm.artifactory.generated.bank.BankProto;
 
+import java.util.List;
+
 /**
  * @author Vivek
  * @since 09/03/22
@@ -18,4 +20,10 @@ public interface Bank {
     boolean deleteBank(String ifsc);
 
     boolean deleteBanks();
+
+    List<BankProto.Bank> getAllByName(String name);
+
+    List<BankProto.Bank> getAllByType(String type);
+
+    List<BankProto.Bank> getAllByIfsc(String ifsc);
 }

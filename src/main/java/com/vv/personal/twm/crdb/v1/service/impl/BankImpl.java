@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 /**
  * @author Vivek
  * @since 09/03/22
@@ -59,5 +61,26 @@ public class BankImpl implements Bank {
         boolean delResult = bankDao.deleteBanks();
         log.info("All Banks del result: {}", delResult);
         return delResult;
+    }
+
+    @Override
+    public List<BankProto.Bank> getAllByName(String name) {
+        List<BankProto.Bank> result = bankDao.getAllByName(name);
+        log.info("Found {} banks matching {}", result.size(), name);
+        return result;
+    }
+
+    @Override
+    public List<BankProto.Bank> getAllByType(String type) {
+        List<BankProto.Bank> result = bankDao.getAllByType(type);
+        log.info("Found {} banks matching {}", result.size(), type);
+        return result;
+    }
+
+    @Override
+    public List<BankProto.Bank> getAllByIfsc(String ifsc) {
+        List<BankProto.Bank> result = bankDao.getAllByIfsc(ifsc);
+        log.info("Found {} banks matching {}", result.size(), ifsc);
+        return result;
     }
 }
