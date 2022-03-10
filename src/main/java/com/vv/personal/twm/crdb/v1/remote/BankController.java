@@ -4,14 +4,7 @@ import com.vv.personal.twm.artifactory.generated.bank.BankProto;
 import com.vv.personal.twm.crdb.v1.service.Bank;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author Vivek
@@ -44,13 +37,13 @@ public class BankController {
             int added = bank.addBanks(bankList);
             if (added == bankList.getBanksCount()) {
                 log.info("Added {} banks!", added);
-                return "Done";
+                return "OK";
             }
-            return "Failed";
+            return "FAILED";
         } catch (Exception e) {
             log.error("Failed to write all data correctly. ", e);
         }
-        return "Failed";
+        return "FAILED";
     }
 
     @GetMapping("/banks")
