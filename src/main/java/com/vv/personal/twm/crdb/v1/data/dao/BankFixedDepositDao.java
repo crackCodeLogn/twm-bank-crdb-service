@@ -57,6 +57,22 @@ public class BankFixedDepositDao {
                 .collect(Collectors.toList());
     }
 
+    public List<FixedDepositProto.FixedDeposit> getAllByBank(String name) {
+        return bankFixedDepositRepository.getAllByMatchingBank(name).stream().map(this::generateFixedDeposit).collect(Collectors.toList());
+    }
+
+    public List<FixedDepositProto.FixedDeposit> getAllByUser(String user) {
+        return bankFixedDepositRepository.getAllByMatchingUser(user).stream().map(this::generateFixedDeposit).collect(Collectors.toList());
+    }
+
+    public List<FixedDepositProto.FixedDeposit> getAllByOriginalUser(String originalUser) {
+        return bankFixedDepositRepository.getAllByMatchingOriginalUser(originalUser).stream().map(this::generateFixedDeposit).collect(Collectors.toList());
+    }
+
+    public List<FixedDepositProto.FixedDeposit> getAllByFdNumber(String fdNumber) {
+        return bankFixedDepositRepository.getAllByMatchingFdNumber(fdNumber).stream().map(this::generateFixedDeposit).collect(Collectors.toList());
+    }
+
     public boolean deleteFixedDeposit(String fdNumber) {
         try {
             bankFixedDepositRepository.deleteById(fdNumber);

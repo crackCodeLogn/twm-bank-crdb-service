@@ -4,13 +4,7 @@ import com.vv.personal.twm.artifactory.generated.deposit.FixedDepositProto;
 import com.vv.personal.twm.crdb.v1.service.FixedDeposit;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author Vivek
@@ -30,19 +24,42 @@ public class BankFixedDepositController {
             int added = fixedDeposit.addFixedDeposits(fixedDepositList);
             if (added == fixedDepositList.getFixedDepositCount()) {
                 log.info("Added {} FDs!", added);
-                return "Done";
+                return "OK";
             }
-            return "Failed";
+            return "FAILED";
         } catch (Exception e) {
             log.error("Failed to write all data correctly. ", e);
         }
-        return "Failed";
+        return "FAILED";
     }
 
     @GetMapping("/fixed-deposits")
-    public FixedDepositProto.FixedDepositList readAllFixedDeposits() {
-        log.info("Received request to read all FDs from db");
-        return fixedDeposit.getFixedDeposits();
+    public FixedDepositProto.FixedDepositList getFixedDeposits(@RequestParam("field") String field, //BANK, USER, ORIGINAL_USER, KEY, EMPTY - return all if EMPTY
+                                                               @RequestParam(value = "value", required = false) String value) {
+        log.info("Received '{}' to list Fixed Deposits for field '{}'", value, field);
+        FixedDepositProto.FixedDepositList.Builder fixedDeposits = FixedDepositProto.FixedDepositList.newBuilder();
+        try {
+            FixedDepositProto.FilterBy filterBy = FixedDepositProto.FilterBy.valueOf(field);
+            switch (filterBy) {
+                case BANK:
+                    fixedDeposits.addAllFixedDeposit(fixedDeposit.getAllByBank(value));
+                    break;
+                case USER:
+                    fixedDeposits.addAllFixedDeposit(fixedDeposit.getAllByUser(value));
+                    break;
+                case ORIGINAL_USER:
+                    fixedDeposits.addAllFixedDeposit(fixedDeposit.getAllByOriginalUser(value));
+                    break;
+                case KEY:
+                    fixedDeposits.addAllFixedDeposit(fixedDeposit.getAllByFdNumber(value));
+                    break;
+                default:
+                    fixedDeposits.addAllFixedDeposit(fixedDeposit.getFixedDeposits().getFixedDepositList());
+            }
+        } catch (Exception e) {
+            log.error("Failed to list {}: {} from crdb! ", field, value, e);
+        }
+        return fixedDeposits.build();
     }
 
     @DeleteMapping("/fixed-deposits/{fd-number}")

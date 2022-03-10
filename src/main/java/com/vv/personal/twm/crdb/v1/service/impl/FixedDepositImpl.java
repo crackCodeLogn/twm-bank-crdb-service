@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 /**
  * @author Vivek
  * @since 09/03/22
@@ -59,5 +61,33 @@ public class FixedDepositImpl implements FixedDeposit {
         boolean delResult = fixedDepositDao.deleteFixedDeposits();
         log.info("All FDs del result: {}", delResult);
         return delResult;
+    }
+
+    @Override
+    public List<FixedDepositProto.FixedDeposit> getAllByBank(String bank) {
+        List<FixedDepositProto.FixedDeposit> result = fixedDepositDao.getAllByBank(bank);
+        log.info("Found {} FDs matching {}", result.size(), bank);
+        return result;
+    }
+
+    @Override
+    public List<FixedDepositProto.FixedDeposit> getAllByUser(String user) {
+        List<FixedDepositProto.FixedDeposit> result = fixedDepositDao.getAllByUser(user);
+        log.info("Found {} FDs matching {}", result.size(), user);
+        return result;
+    }
+
+    @Override
+    public List<FixedDepositProto.FixedDeposit> getAllByOriginalUser(String originalUser) {
+        List<FixedDepositProto.FixedDeposit> result = fixedDepositDao.getAllByOriginalUser(originalUser);
+        log.info("Found {} FDs matching {}", result.size(), originalUser);
+        return result;
+    }
+
+    @Override
+    public List<FixedDepositProto.FixedDeposit> getAllByFdNumber(String fdNumber) {
+        List<FixedDepositProto.FixedDeposit> result = fixedDepositDao.getAllByFdNumber(fdNumber);
+        log.info("Found {} FDs matching {}", result.size(), fdNumber);
+        return result;
     }
 }
