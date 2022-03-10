@@ -56,6 +56,18 @@ public class BankDao {
                 .collect(Collectors.toList());
     }
 
+    public List<BankProto.Bank> getAllByName(String name) {
+        return bankRepository.getAllByMatchingName(name).stream().map(this::generateBank).collect(Collectors.toList());
+    }
+
+    public List<BankProto.Bank> getAllByType(String type) {
+        return bankRepository.getAllByMatchingType(type).stream().map(this::generateBank).collect(Collectors.toList());
+    }
+
+    public List<BankProto.Bank> getAllByIfsc(String ifsc) {
+        return bankRepository.getAllByMatchingIfsc(ifsc).stream().map(this::generateBank).collect(Collectors.toList());
+    }
+
     public boolean deleteBank(String ifsc) {
         try {
             bankRepository.deleteById(ifsc);
@@ -94,17 +106,5 @@ public class BankDao {
                 .setContactNumber(bank.getContactNumber())
                 .setActive(bank.getIsActive())
                 .setCreatedTimestamp(instant);
-    }
-
-    public List<BankProto.Bank> getAllByName(String name) {
-        return bankRepository.getAllByMatchingName(name).stream().map(this::generateBank).collect(Collectors.toList());
-    }
-
-    public List<BankProto.Bank> getAllByType(String type) {
-        return bankRepository.getAllByMatchingType(type).stream().map(this::generateBank).collect(Collectors.toList());
-    }
-
-    public List<BankProto.Bank> getAllByIfsc(String ifsc) {
-        return bankRepository.getAllByMatchingIfsc(ifsc).stream().map(this::generateBank).collect(Collectors.toList());
     }
 }
