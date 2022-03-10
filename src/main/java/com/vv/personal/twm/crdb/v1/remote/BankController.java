@@ -24,6 +24,19 @@ import org.springframework.web.bind.annotation.RestController;
 public class BankController {
     private final Bank bank;
 
+    @PostMapping("/bank")
+    public String addBank(@RequestBody BankProto.Bank bankData) {
+        log.info("Received request to add '{}' bank into db", bankData.getIFSC());
+        try {
+            boolean result = bank.addBank(bankData);
+            if (result) return "Done";
+            return "Failed";
+        } catch (Exception e) {
+            log.error("Failed to write all data correctly. ", e);
+        }
+        return "Failed";
+    }
+
     @PostMapping("/banks")
     public String addBanks(@RequestBody BankProto.BankList bankList) {
         log.info("Received request to add '{}' banks into db", bankList.getBanksCount());

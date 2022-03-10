@@ -23,6 +23,19 @@ import org.springframework.web.bind.annotation.RestController;
 public class BankFixedDepositController {
     private final FixedDeposit fixedDeposit;
 
+    @PostMapping("/fixed-deposit")
+    public String addFixedDeposit(@RequestBody FixedDepositProto.FixedDeposit fixedDepositData) {
+        log.info("Received request to add '{}' FD into db", fixedDepositData.getFdNumber());
+        try {
+            boolean added = fixedDeposit.addFixedDeposit(fixedDepositData);
+            if (added) return "Done";
+            return "Failed";
+        } catch (Exception e) {
+            log.error("Failed to write all data correctly. ", e);
+        }
+        return "Failed";
+    }
+
     @PostMapping("/fixed-deposits")
     public String addFixedDeposits(@RequestBody FixedDepositProto.FixedDepositList fixedDepositList) {
         log.info("Received request to add '{}' FDs into db", fixedDepositList.getFixedDepositCount());
