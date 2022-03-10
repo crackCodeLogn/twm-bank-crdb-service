@@ -109,6 +109,8 @@ public class BankFixedDepositDao {
                 .setInterestType(FixedDepositProto.InterestType.valueOf(fixedDeposit.getInterestType()))
                 .setNominee(fixedDeposit.getNominee())
                 .setIsFdActive(fixedDeposit.isActive())
+                .setExpectedAmount(fixedDeposit.getExpectedAmount())
+                .setExpectedInterest(fixedDeposit.getExpectedInterest())
                 .build();
     }
 
@@ -128,6 +130,8 @@ public class BankFixedDepositDao {
                 .setInterestType(fixedDeposit.getInterestType().name())
                 .setNominee(fixedDeposit.getNominee())
                 .setActive(fixedDeposit.getIsFdActive())
+                .setExpectedAmount(fixedDeposit.getExpectedAmount())
+                .setExpectedInterest(fixedDeposit.getExpectedInterest())
                 .setCreatedTimestamp(instant);
     }
 }
