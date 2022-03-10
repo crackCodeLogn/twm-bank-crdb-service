@@ -62,6 +62,20 @@ public class BankFixedDepositController {
         return fixedDeposits.build();
     }
 
+    @PutMapping("/fixed-deposits")
+    public String updateFixedDeposit(@RequestBody FixedDepositProto.FixedDeposit fixedDeposit) {
+        log.info("Going to replace FD with key: {} with updated information", fixedDeposit.getFdNumber());
+        if (deleteFixedDeposit(fixedDeposit.getFdNumber())) {
+            if (addFixedDeposits(FixedDepositProto.FixedDepositList.newBuilder().addFixedDeposit(fixedDeposit).build()).equals("OK")) {
+                log.info("Added updated FD details in crdb for key: {}", fixedDeposit.getFdNumber());
+                return "OK";
+            } else {
+                log.error("Failed to update FD with key: {}", fixedDeposit.getFdNumber());
+            }
+        }
+        return "FAILED";
+    }
+
     @DeleteMapping("/fixed-deposits/{fd-number}")
     public boolean deleteFixedDeposit(@PathVariable("fd-number") String fdNumber) {
         log.info("Received request to del FD for fd number: {}", fdNumber);
