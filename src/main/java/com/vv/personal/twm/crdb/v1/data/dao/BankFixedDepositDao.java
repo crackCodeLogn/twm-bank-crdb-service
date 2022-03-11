@@ -73,6 +73,15 @@ public class BankFixedDepositDao {
         return bankFixedDepositRepository.getAllByMatchingFdNumber(fdNumber).stream().map(this::generateFixedDeposit).collect(Collectors.toList());
     }
 
+    public boolean updateFixedDepositActiveStatus(String fdNumber, Boolean isActive) {
+        try {
+            return bankFixedDepositRepository.updateFixedDepositActiveStatus(fdNumber, isActive) == 1;
+        } catch (Exception e) {
+            log.error("Failed to updateFixedDepositActiveStatus for {} to {}. ", fdNumber, isActive, e);
+        }
+        return false;
+    }
+
     public boolean deleteFixedDeposit(String fdNumber) {
         try {
             bankFixedDepositRepository.deleteById(fdNumber);

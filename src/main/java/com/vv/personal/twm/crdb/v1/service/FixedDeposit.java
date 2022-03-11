@@ -28,4 +28,6 @@ public interface FixedDeposit {
     List<FixedDepositProto.FixedDeposit> getAllByOriginalUser(String originalUser);
 
     List<FixedDepositProto.FixedDeposit> getAllByFdNumber(String fdNumber);
+
+    boolean updateFixedDepositActiveStatus(String fdNumber, Boolean isActive);
 }

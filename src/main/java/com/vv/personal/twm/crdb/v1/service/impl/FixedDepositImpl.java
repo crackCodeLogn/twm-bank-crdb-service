@@ -90,4 +90,9 @@ public class FixedDepositImpl implements FixedDeposit {
         log.info("Found {} FDs matching {}", result.size(), fdNumber);
         return result;
     }
+
+    @Override
+    public boolean updateFixedDepositActiveStatus(String fdNumber, Boolean isActive) {
+        return fixedDepositDao.updateFixedDepositActiveStatus(fdNumber, isActive);
+    }
 }

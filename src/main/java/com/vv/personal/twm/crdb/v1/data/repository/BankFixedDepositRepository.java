@@ -2,9 +2,11 @@ package com.vv.personal.twm.crdb.v1.data.repository;
 
 import com.vv.personal.twm.crdb.v1.data.entity.BankFixedDepositEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -26,4 +28,10 @@ public interface BankFixedDepositRepository extends JpaRepository<BankFixedDepos
 
     @Query(value = "SELECT * from bank_fd where fd_number ~ :fdNumber", nativeQuery = true)
     List<BankFixedDepositEntity> getAllByMatchingFdNumber(@Param("fdNumber") String fdNumber);
+
+    @Modifying
+    @Transactional
+    @Query(value = "UPDATE bank_fd SET is_active = :isActive where fd_number = :fdNumber", nativeQuery = true)
+    int updateFixedDepositActiveStatus(@Param("fdNumber") String fdNumber,
+                                       @Param("isActive") Boolean isActive);
 }

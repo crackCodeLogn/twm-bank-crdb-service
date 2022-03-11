@@ -89,6 +89,14 @@ public class BankFixedDepositController {
         return "FAILED";
     }
 
+    @PutMapping("/fixed-deposits/{fd}")
+    public String updateFixedDeposit(@PathVariable("fd") String fdNumber,
+                                     @RequestParam("active") Boolean isActive) {
+        log.info("Going to update FD with key: {} with active status: {}", fdNumber, isActive);
+        if (fixedDeposit.updateFixedDepositActiveStatus(fdNumber, isActive)) return "OK";
+        return "FAILED";
+    }
+
     @DeleteMapping("/fixed-deposits/{fd-number}")
     public boolean deleteFixedDeposit(@PathVariable("fd-number") String fdNumber) {
         log.info("Received request to del FD for fd number: {}", fdNumber);
