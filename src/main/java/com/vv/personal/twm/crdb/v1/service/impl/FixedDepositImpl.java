@@ -95,4 +95,9 @@ public class FixedDepositImpl implements FixedDeposit {
     public boolean updateFixedDepositActiveStatus(String fdNumber, Boolean isActive) {
         return fixedDepositDao.updateFixedDepositActiveStatus(fdNumber, isActive);
     }
+
+    @Override
+    public String extractDataInDelimitedFormat(String delimiter) {
+        return null;
+    }
 }

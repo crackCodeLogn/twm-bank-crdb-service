@@ -8,7 +8,7 @@ import java.util.List;
  * @author Vivek
  * @since 09/03/22
  */
-public interface Bank {
+public interface Bank extends BackUpAndRestore {
     boolean addBank(BankProto.Bank bank);
 
     int addBanks(BankProto.BankList bankList);

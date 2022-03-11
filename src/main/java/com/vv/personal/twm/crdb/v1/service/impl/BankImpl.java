@@ -83,4 +83,9 @@ public class BankImpl implements Bank {
         log.info("Found {} banks matching {}", result.size(), ifsc);
         return result;
     }
+
+    @Override
+    public String extractDataInDelimitedFormat(String delimiter) {
+        return null;
+    }
 }
