@@ -2,9 +2,13 @@ package com.vv.personal.twm.crdb.v1.remote;
 
 import com.vv.personal.twm.artifactory.generated.deposit.FixedDepositProto;
 import com.vv.personal.twm.crdb.v1.service.FixedDeposit;
+import com.vv.personal.twm.crdb.v1.util.BankHelperUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 
 /**
  * @author Vivek
@@ -107,6 +111,21 @@ public class BankFixedDepositController {
     public boolean deleteFixedDeposits() {
         log.info("Received request to del all FDs");
         return fixedDeposit.deleteFixedDeposits();
+    }
+
+    @GetMapping("/fixed-deposits/backup")
+    public boolean backUp(@RequestParam("destinationFolder") String destinationFolder, @RequestParam("delimiter") String delimiter) {
+        String zonedDateTime = ZonedDateTime.now(ZoneId.of("IST", ZoneId.SHORT_IDS)).toString();
+        zonedDateTime = zonedDateTime.substring(0, zonedDateTime.indexOf('['));
+        log.info("Received request to initiate writing of db content as backup to {} using {} separated, at time {}", destinationFolder, delimiter, zonedDateTime);
+        String destinationFileName = String.format("%s-%s.csv", "FixedDeposits", zonedDateTime);
+        boolean result = BankHelperUtil.writeToFile(
+                fixedDeposit.extractDataInDelimitedFormat(delimiter),
+                destinationFolder,
+                destinationFileName
+        );
+        log.info("Backup creation result: {} for {}", result, destinationFileName);
+        return result;
     }
 
     @GetMapping("/test-fd")

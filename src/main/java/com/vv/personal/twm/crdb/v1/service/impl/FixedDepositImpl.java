@@ -5,6 +5,7 @@ import com.vv.personal.twm.crdb.v1.data.dao.BankFixedDepositDao;
 import com.vv.personal.twm.crdb.v1.service.FixedDeposit;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -98,6 +99,16 @@ public class FixedDepositImpl implements FixedDeposit {
 
     @Override
     public String extractDataInDelimitedFormat(String delimiter) {
-        return null;
+        StringBuilder dataLines = new StringBuilder();
+        fixedDepositDao.getFixedDepositsInEntityFormat().forEach(bankFixedDepositEntity ->
+                dataLines.append(StringUtils.joinWith(delimiter,
+                        bankFixedDepositEntity.getFdNumber(), bankFixedDepositEntity.getUserFd(), bankFixedDepositEntity.getCustomerId(), bankFixedDepositEntity.getBankIfsc(),
+                        bankFixedDepositEntity.getDepositAmount(), bankFixedDepositEntity.getRateOfInterest(), bankFixedDepositEntity.getStartDate(), bankFixedDepositEntity.getEndDate(),
+                        bankFixedDepositEntity.getMonths(), bankFixedDepositEntity.getDays(), bankFixedDepositEntity.getInterestType(), bankFixedDepositEntity.getNominee(),
+                        bankFixedDepositEntity.getExpectedAmount(), bankFixedDepositEntity.getExpectedInterest(), bankFixedDepositEntity.getOriginalUserFd(),
+                        bankFixedDepositEntity.isActive(), bankFixedDepositEntity.getCreatedTimestamp())
+                ).append("\n")
+        );
+        return dataLines.toString();
     }
 }

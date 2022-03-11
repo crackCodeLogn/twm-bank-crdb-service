@@ -56,6 +56,14 @@ public class BankDao {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Doing the sin of shipping out the entities in list outside the DAO. Required for pure backup scenario.
+     * The proto obj doesn't contain audit column like cre_ts;
+     */
+    public List<BankEntity> getBanksInEntityFormat() {
+        return bankRepository.findAll();
+    }
+
     public List<BankProto.Bank> getAllByName(String name) {
         return bankRepository.getAllByMatchingName(name).stream().map(this::generateBank).collect(Collectors.toList());
     }

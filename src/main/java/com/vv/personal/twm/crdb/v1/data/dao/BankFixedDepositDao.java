@@ -57,6 +57,14 @@ public class BankFixedDepositDao {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Doing the sin of shipping out the entities in list outside the DAO. Required for pure backup scenario.
+     * The proto obj doesn't contain audit column like cre_ts;
+     */
+    public List<BankFixedDepositEntity> getFixedDepositsInEntityFormat() {
+        return bankFixedDepositRepository.findAll();
+    }
+
     public List<FixedDepositProto.FixedDeposit> getAllByBank(String name) {
         return bankFixedDepositRepository.getAllByMatchingBank(name).stream().map(this::generateFixedDeposit).collect(Collectors.toList());
     }

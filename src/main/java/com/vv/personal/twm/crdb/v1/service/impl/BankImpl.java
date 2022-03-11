@@ -5,6 +5,7 @@ import com.vv.personal.twm.crdb.v1.data.dao.BankDao;
 import com.vv.personal.twm.crdb.v1.service.Bank;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -86,6 +87,13 @@ public class BankImpl implements Bank {
 
     @Override
     public String extractDataInDelimitedFormat(String delimiter) {
-        return null;
+        StringBuilder dataLines = new StringBuilder();
+        bankDao.getBanksInEntityFormat().forEach(bankEntity ->
+                dataLines.append(StringUtils.joinWith(delimiter,
+                        bankEntity.getBankName(), bankEntity.getIfsc(), bankEntity.getContactNumber(), bankEntity.getBankType(),
+                        bankEntity.isActive(), bankEntity.getCreatedTimestamp())
+                ).append("\n")
+        );
+        return dataLines.toString();
     }
 }
