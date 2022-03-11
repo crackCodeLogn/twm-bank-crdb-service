@@ -24,4 +24,10 @@ class BankHelperUtilTest {
         Date date = BankHelperUtil.getDateFromYyyyMmDd("20220310");
         assertThat(date).hasToString("2022-03-10");
     }
+
+    @Test
+    void testGetZonedDateTimeForFileName() {
+        String result = BankHelperUtil.getZonedDateTimeForFileName();
+        assertThat(result).matches("[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{6}");
+    }
 }

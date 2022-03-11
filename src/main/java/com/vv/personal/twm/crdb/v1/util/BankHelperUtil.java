@@ -6,6 +6,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.Date;
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
 /**
@@ -25,6 +27,12 @@ public final class BankHelperUtil {
 
     public static Date getDateFromYyyyMmDd(String date) {
         return Date.valueOf(LocalDate.parse(date, DATE_TIME_FORMATTER_YYYYMMDD));
+    }
+
+    public static String getZonedDateTimeForFileName() {
+        String zonedDateTime = ZonedDateTime.now(ZoneId.of("IST", ZoneId.SHORT_IDS)).toString();
+        zonedDateTime = zonedDateTime.substring(0, zonedDateTime.indexOf('.')).replace(":", "");
+        return zonedDateTime;
     }
 
     public static boolean writeToFile(String data, String destinationFolder, String destinationFileName) {
