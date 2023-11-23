@@ -4,6 +4,8 @@ spring:
   datasource:
     url: jdbc:postgresql://${CRDB_DB_HOST}:${CRDB_DB_PORT}/${CRDB_DB}
     username: ${CRDB_USERNAME}
+  jpa:
+    database: postgresql
   cloud:
     loadbalancer:
       ribbon:
