@@ -4,7 +4,7 @@ JAVA_PARAM="-Xmx501m"
 
 BIN_PATH=$TWM_HOME_PARENT/TWM/$APP_NAME/bin     #TWM-HOME-PARENT :: exported in .bashrc
 JAR_PATH=$BIN_PATH/../target/$APP_NAME-$APP_VERSION.jar
-JAVA_PATH=$HOME/.jdks/corretto-17.0.9/bin/java
+JAVA_PATH=$HOME/.jdks/jdk17/bin/java
 
 if [[ $# -eq 0 ]]; then
     EUREKA_URI="http://localhost:2012/eureka"
