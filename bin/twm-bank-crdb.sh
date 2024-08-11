@@ -1,9 +1,10 @@
 APP_NAME="twm-bank-crdb-service"
-APP_VERSION="2.0-SNAPSHOT"
 JAVA_PARAM="-Xmx501m"
 
 BIN_PATH=$TWM_HOME_PARENT/TWM/$APP_NAME/bin     #TWM-HOME-PARENT :: exported in .bashrc
-JAR_PATH=$BIN_PATH/../target/$APP_NAME-$APP_VERSION.jar
+cd $BIN_PATH/../target/
+JAR_NAME=`ls *jar`
+JAR_PATH=$BIN_PATH/../target/$JAR_NAME
 JAVA_PATH=$HOME/.jdks/jdk17/bin/java
 
 if [[ $# -eq 0 ]]; then
