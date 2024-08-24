@@ -106,7 +106,7 @@ public class FixedDepositImpl implements FixedDeposit {
                         bankFixedDepositEntity.getDepositAmount(), bankFixedDepositEntity.getRateOfInterest(), bankFixedDepositEntity.getStartDate(), bankFixedDepositEntity.getEndDate(),
                         bankFixedDepositEntity.getMonths(), bankFixedDepositEntity.getDays(), bankFixedDepositEntity.getInterestType(), bankFixedDepositEntity.getNominee(),
                         bankFixedDepositEntity.getExpectedAmount(), bankFixedDepositEntity.getExpectedInterest(), bankFixedDepositEntity.getOriginalUserFd(),
-                        bankFixedDepositEntity.isActive(), bankFixedDepositEntity.getCreatedTimestamp())
+                        bankFixedDepositEntity.getIsActive(), bankFixedDepositEntity.getCreatedTimestamp())
                 ).append("\n")
         );
         return dataLines.toString();

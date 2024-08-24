@@ -5,15 +5,7 @@ import com.vv.personal.twm.crdb.v1.service.FixedDeposit;
 import com.vv.personal.twm.crdb.v1.util.BankHelperUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author Vivek
@@ -56,7 +48,7 @@ public class BankFixedDepositController {
     }
 
     @GetMapping("/fixed-deposits")
-    public FixedDepositProto.FixedDepositList getFixedDeposits(@RequestParam("field") String field, //BANK, USER, ORIGINAL_USER, KEY, EMPTY - return all if EMPTY
+    public FixedDepositProto.FixedDepositList getFixedDeposits(@RequestParam(value = "field", required = false, defaultValue = "ALL") String field, //BANK, USER, ORIGINAL_USER, KEY, ALL
                                                                @RequestParam(value = "value", required = false) String value) {
         log.info("Received '{}' to list Fixed Deposits for field '{}'", value, field);
         FixedDepositProto.FixedDepositList.Builder fixedDeposits = FixedDepositProto.FixedDepositList.newBuilder();
