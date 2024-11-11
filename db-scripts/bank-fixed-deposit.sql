@@ -23,3 +23,6 @@ CREATE TABLE IF NOT EXISTS bank_fd (
 
 ALTER TABLE bank_fd
     ADD column TYPE_ACC INT DEFAULT 0 not null; -- add another column for account typ => 0: IND, 1: TFSA, 2: NR
+
+ALTER TABLE bank_fd
+    ADD column FREEZE INT DEFAULT 0 not null; -- add another column for freeze => 0 for no freeze, 1 for freezing total amount

@@ -34,4 +34,15 @@ public interface BankFixedDepositRepository extends JpaRepository<BankFixedDepos
     @Query(value = "UPDATE bank_fd SET is_active = :isActive where fd_number = :fdNumber", nativeQuery = true)
     int updateFixedDepositActiveStatus(@Param("fdNumber") String fdNumber,
                                        @Param("isActive") Boolean isActive);
+
+    @Modifying
+    @Transactional
+    @Query(value = "UPDATE bank_fd SET fd_number = :newFdNumber where fd_number = :fdNumber", nativeQuery = true)
+    int expireNrFd(@Param("fdNumber") String fdNumber, @Param("newFdNumber") String newFdNumber);
+
+    @Modifying
+    @Transactional
+    @Query(value = "UPDATE bank_fd SET int_exp = :interest, amt_exp = :amount, freeze = 1 where fd_number = :fdNumber", nativeQuery = true)
+    int freezeTotalAmount(@Param("fdNumber") String fdNumber, @Param("interest") Double interest,
+                          @Param("amount") Double amount);
 }

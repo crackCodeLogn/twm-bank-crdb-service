@@ -98,6 +98,19 @@ public class FixedDepositImpl implements FixedDeposit {
     }
 
     @Override
+    public boolean freezeTotalAmount(String fdNumber, Double totalAmount) {
+        FixedDepositProto.FixedDeposit fixedDeposit = getFixedDeposit(fdNumber);
+        double interest = totalAmount - fixedDeposit.getDepositAmount();
+        return fixedDepositDao.freezeTotalAmount(fdNumber, interest, totalAmount);
+    }
+
+    @Override
+    public boolean expireNrFd(String fdNumber) {
+        String newFdNumber = fdNumber + "_exp";
+        return updateFixedDepositActiveStatus(fdNumber, false) && fixedDepositDao.expireNrFd(fdNumber, newFdNumber);
+    }
+
+    @Override
     public String extractDataInDelimitedFormat(String delimiter) {
         StringBuilder dataLines = new StringBuilder();
         fixedDepositDao.getFixedDepositsInEntityFormat().forEach(bankFixedDepositEntity ->

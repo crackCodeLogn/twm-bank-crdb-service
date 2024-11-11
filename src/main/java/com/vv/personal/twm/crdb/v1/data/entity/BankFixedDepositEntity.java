@@ -76,6 +76,9 @@ public class BankFixedDepositEntity {
     @Column(name = "type_acc")
     private Integer accountType;
 
+    @Column(name = "freeze")
+    private Integer freeze;
+
     @Column(name = "cre_ts")
     private Instant createdTimestamp;
 
@@ -102,6 +105,7 @@ public class BankFixedDepositEntity {
                 .append("expectedInterest", expectedInterest)
                 .append("originalUserFd", originalUserFd)
                 .append("isActive", isActive)
+                .append("freeze", freeze)
                 .append("createdTimestamp", createdTimestamp)
                 .toString();
     }

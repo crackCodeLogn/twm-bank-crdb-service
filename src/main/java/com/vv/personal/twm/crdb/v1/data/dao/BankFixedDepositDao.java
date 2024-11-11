@@ -90,6 +90,14 @@ public class BankFixedDepositDao {
         return false;
     }
 
+    public boolean expireNrFd(String fdNumber, String newFdNumber) {
+        return bankFixedDepositRepository.expireNrFd(fdNumber, newFdNumber) == 1;
+    }
+
+    public boolean freezeTotalAmount(String fdNumber, Double interest, Double totalAmount) {
+        return bankFixedDepositRepository.freezeTotalAmount(fdNumber, interest, totalAmount) == 1;
+    }
+
     public boolean deleteFixedDeposit(String fdNumber) {
         try {
             bankFixedDepositRepository.deleteById(fdNumber);
@@ -129,6 +137,7 @@ public class BankFixedDepositDao {
                 .setExpectedAmount(fixedDeposit.getExpectedAmount())
                 .setExpectedInterest(fixedDeposit.getExpectedInterest())
                 .setAccountType(FixedDepositProto.AccountType.forNumber(fixedDeposit.getAccountType()))
+                .setFreeze(fixedDeposit.getFreeze())
                 .build();
     }
 
@@ -151,6 +160,7 @@ public class BankFixedDepositDao {
                 .isActive(fixedDeposit.getIsFdActive())
                 .expectedAmount(fixedDeposit.getExpectedAmount())
                 .expectedInterest(fixedDeposit.getExpectedInterest())
+                .freeze(fixedDeposit.getFreeze())
                 .createdTimestamp(instant)
                 .build();
     }

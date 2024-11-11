@@ -30,4 +30,8 @@ public interface FixedDeposit extends BackUpAndRestore {
     List<FixedDepositProto.FixedDeposit> getAllByFdNumber(String fdNumber);
 
     boolean updateFixedDepositActiveStatus(String fdNumber, Boolean isActive);
+
+    boolean freezeTotalAmount(String fdNumber, Double totalAmount);
+
+    boolean expireNrFd(String fdNumber);
 }

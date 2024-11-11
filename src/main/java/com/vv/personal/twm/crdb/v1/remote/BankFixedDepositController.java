@@ -98,6 +98,21 @@ public class BankFixedDepositController {
         return "FAILED";
     }
 
+    @PutMapping("/fixed-deposits/{fd}/freeze")
+    public String freezeTotalAmount(@PathVariable("fd") String fdNumber,
+                                    @RequestParam("totalAmount") Double totalAmount) {
+        log.info("Going to freeze FD with key: {} with total amount: {}", fdNumber, totalAmount);
+        if (fixedDeposit.freezeTotalAmount(fdNumber, totalAmount)) return "OK";
+        return "FAILED";
+    }
+
+    @PutMapping("/fixed-deposits/{fd}/expire/nr")
+    public String expireNrFd(@PathVariable("fd") String fdNumber) {
+        log.info("Going to expire NR FD with key: {}", fdNumber);
+        if (fixedDeposit.expireNrFd(fdNumber)) return "OK";
+        return "FAILED";
+    }
+
     @DeleteMapping("/fixed-deposits/{fd-number}")
     public boolean deleteFixedDeposit(@PathVariable("fd-number") String fdNumber) {
         log.info("Received request to del FD for fd number: {}", fdNumber);
