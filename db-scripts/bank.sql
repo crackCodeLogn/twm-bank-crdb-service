@@ -9,3 +9,6 @@ CREATE TABLE IF NOT EXISTS bank (
 
     PRIMARY KEY (IFSC)
 );
+
+alter table bank
+    add column COUNTRY_CODE VARCHAR(10) NOT NULL DEFAULT 'IN';

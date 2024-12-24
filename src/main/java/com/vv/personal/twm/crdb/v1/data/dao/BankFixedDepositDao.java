@@ -48,7 +48,7 @@ public class BankFixedDepositDao {
     }
 
     public FixedDepositProto.FixedDeposit getFixedDeposit(String fdNumber) {
-        return generateFixedDeposit(bankFixedDepositRepository.getOne(fdNumber));
+        return generateFixedDeposit(bankFixedDepositRepository.getReferenceById(fdNumber));
     }
 
     public List<FixedDepositProto.FixedDeposit> getFixedDeposits() {

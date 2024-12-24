@@ -5,14 +5,7 @@ import com.vv.personal.twm.crdb.v1.service.Bank;
 import com.vv.personal.twm.crdb.v1.util.BankHelperUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author Vivek
@@ -113,6 +106,7 @@ public class BankController {
                 .setName("HSBC")
                 .setContactNumber("215444")
                 .setIFSC("1234567891")
+                .setCountryCode("IN")
                 .build();
 
         //bank.addBank(data);

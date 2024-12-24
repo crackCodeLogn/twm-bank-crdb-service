@@ -47,7 +47,7 @@ public class BankDao {
     }
 
     public BankProto.Bank getBank(String ifsc) {
-        return generateBank(bankRepository.getOne(ifsc));
+        return generateBank(bankRepository.getReferenceById(ifsc));
     }
 
     public List<BankProto.Bank> getBanks() {
@@ -102,17 +102,20 @@ public class BankDao {
                 .setIFSC(bank.getIfsc())
                 .setBankType(BankProto.BankType.valueOf(bank.getBankType()))
                 .setContactNumber(bank.getContactNumber())
-                .setIsActive(bank.isActive())
+                .setCountryCode(bank.getCountryCode())
+                .setIsActive(bank.getIsActive())
                 .build();
     }
 
     BankEntity generateBankEntity(BankProto.Bank bank, Instant instant) {
-        return new BankEntity()
-                .setBankName(bank.getName())
-                .setBankType(bank.getBankType().name())
-                .setIfsc(bank.getIFSC())
-                .setContactNumber(bank.getContactNumber())
-                .setActive(bank.getIsActive())
-                .setCreatedTimestamp(instant);
+        return BankEntity.builder()
+                .bankName(bank.getName())
+                .bankType(bank.getBankType().name())
+                .ifsc(bank.getIFSC())
+                .contactNumber(bank.getContactNumber())
+                .isActive(bank.getIsActive())
+                .countryCode(bank.getCountryCode())
+                .createdTimestamp(instant)
+                .build();
     }
 }

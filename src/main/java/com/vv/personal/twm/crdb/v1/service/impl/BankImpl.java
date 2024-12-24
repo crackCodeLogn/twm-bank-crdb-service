@@ -91,7 +91,7 @@ public class BankImpl implements Bank {
         bankDao.getBanksInEntityFormat().forEach(bankEntity ->
                 dataLines.append(StringUtils.joinWith(delimiter,
                         bankEntity.getBankName(), bankEntity.getIfsc(), bankEntity.getContactNumber(), bankEntity.getBankType(),
-                        bankEntity.isActive(), bankEntity.getCreatedTimestamp())
+                        bankEntity.getIsActive(), bankEntity.getCreatedTimestamp())
                 ).append("\n")
         );
         return dataLines.toString();
