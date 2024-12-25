@@ -12,3 +12,6 @@ CREATE TABLE IF NOT EXISTS bank (
 
 alter table bank
     add column COUNTRY_CODE VARCHAR(10) NOT NULL DEFAULT 'IN';
+
+alter table bank
+    add constraint bank_pkey PRIMARY KEY (ifsc);

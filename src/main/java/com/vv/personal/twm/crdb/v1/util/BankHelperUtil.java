@@ -1,14 +1,17 @@
 package com.vv.personal.twm.crdb.v1.util;
 
+import com.google.protobuf.Timestamp;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.Date;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.UUID;
 
 /**
  * @author Vivek
@@ -44,5 +47,21 @@ public final class BankHelperUtil {
             log.error("Failed to write content to file: {}. ", destinationFile, e);
         }
         return false;
+    }
+
+    public static Instant fromTimestamp(Timestamp timestamp) {
+        return Instant.ofEpochSecond(timestamp.getSeconds(), timestamp.getNanos());
+    }
+
+    public static Timestamp fromInstant(Instant instant) {
+        return Timestamp.newBuilder().setSeconds(instant.getEpochSecond()).setNanos(instant.getNano()).build();
+    }
+
+    public static UUID getUUID(String id) {
+        return UUID.fromString(id);
+    }
+
+    public static String getUUIDString(UUID uuid) {
+        return uuid.toString();
     }
 }
