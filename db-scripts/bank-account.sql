@@ -19,3 +19,9 @@ CREATE TABLE IF NOT EXISTS bank_account
     PRIMARY KEY (ID),
     FOREIGN KEY (BANK_IFSC) REFERENCES bank(ifsc)
 );
+
+alter table bank_account
+    add column NOTE VARCHAR(5000) DEFAULT '';
+
+alter table bank_account
+    add column CCY VARCHAR(10) DEFAULT 'CAD';

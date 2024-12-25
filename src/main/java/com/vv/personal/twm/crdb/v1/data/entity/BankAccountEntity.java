@@ -60,6 +60,12 @@ public class BankAccountEntity {
   @Column(name = "is_active")
   private Boolean isActive;
 
+  @Column(name = "note")
+  private String note;
+
+  @Column(name = "ccy")
+  private String currencyCode;
+
   @Column(name = "cre_ts")
   private Instant createdTimestamp;
 
@@ -81,6 +87,8 @@ public class BankAccountEntity {
         .append("overdraftBalance", overdraftBalance)
         .append("interestRate", interestRate)
         .append("isActive", isActive)
+        .append("note", note)
+        .append("currencyCode", currencyCode)
         .append("createdTimestamp", createdTimestamp)
         .append("lastUpdatedTimestamp", lastUpdatedTimestamp)
         .toString();

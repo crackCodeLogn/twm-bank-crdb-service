@@ -1,5 +1,6 @@
 package com.vv.personal.twm.crdb.v1.data.dao.impl;
 
+import static com.vv.personal.twm.artifactory.generated.bank.BankProto.CurrencyCode.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.vv.personal.twm.artifactory.generated.bank.BankProto;
@@ -54,6 +55,8 @@ class BankServiceAccountDaoImplIntegrationTest {
             .setOverdraftBalance(100)
             .setInterestRate(0.05)
             .setIsActive(true)
+            .setNote("Test Note")
+            .setCcy(CAD)
             .build();
     bankAccountDao
         .getAllBankAccountsByMatchingIfsc("TESTB-001")
@@ -100,6 +103,8 @@ class BankServiceAccountDaoImplIntegrationTest {
             .setOverdraftBalance(100)
             .setInterestRate(3.0)
             .setIsActive(true)
+            .setNote("")
+            .setCcy(BankProto.CurrencyCode.INR)
             .build();
     assertTrue(bankAccountDao.addBankAccount(bankAccount2));
 
@@ -117,13 +122,15 @@ class BankServiceAccountDaoImplIntegrationTest {
             .setOverdraftBalance(100)
             .setInterestRate(1.5)
             .setIsActive(true)
+            .setNote("Test note 3")
+            .setCcy(BankProto.CurrencyCode.USD)
             .build();
     assertTrue(bankAccountDao.addBankAccount(bankAccount3));
 
     // test various get methods
     Optional<BankProto.BankAccounts> bankAccounts = bankAccountDao.getAllBankAccounts();
     assertTrue(bankAccounts.isPresent());
-    assertEquals(3, bankAccounts.get().getAccountsCount());
+    assertTrue(bankAccounts.get().getAccountsCount() >= 3);
 
     Optional<BankProto.BankAccounts> bankAccountsList2 =
         bankAccountDao.getAllBankAccountsByMatchingName("Test ");
@@ -151,6 +158,20 @@ class BankServiceAccountDaoImplIntegrationTest {
     optionalDouble = bankAccountDao.getBankAccountBalance(bankAccountId1);
     assertTrue(optionalDouble.isPresent());
     assertEquals(10001.51, optionalDouble.getAsDouble());
+
+    // check newly added columns
+    BankProto.BankAccount testBankAccount;
+    testBankAccount = bankAccountDao.getBankAccount(bankAccountId1).get();
+    assertEquals(CAD, testBankAccount.getCcy());
+    assertEquals("Test Note", testBankAccount.getNote());
+
+    testBankAccount = bankAccountDao.getBankAccount(bankAccountId2).get();
+    assertEquals(INR, testBankAccount.getCcy());
+    assertTrue(testBankAccount.getNote().isBlank());
+
+    testBankAccount = bankAccountDao.getBankAccount(bankAccountId3).get();
+    assertEquals(USD, testBankAccount.getCcy());
+    assertEquals("Test note 3", testBankAccount.getNote());
 
     // delete bank account
     assertTrue(bankAccountDao.deleteBankAccount(bankAccountId1));

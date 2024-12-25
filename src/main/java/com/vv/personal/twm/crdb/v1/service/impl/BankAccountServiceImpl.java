@@ -97,6 +97,8 @@ public class BankAccountServiceImpl implements BankAccountService {
                             bankAccountEntity.getOverdraftBalance(),
                             bankAccountEntity.getInterestRate(),
                             bankAccountEntity.getIsActive(),
+                            bankAccountEntity.getNote(),
+                            bankAccountEntity.getCurrencyCode(),
                             bankAccountEntity.getCreatedTimestamp(),
                             bankAccountEntity.getLastUpdatedTimestamp()))
                     .append("\n"));

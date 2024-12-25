@@ -169,6 +169,8 @@ public class BankAccountDaoImpl implements BankAccountDao {
         .overdraftBalance(bankAccount.getOverdraftBalance())
         .interestRate(bankAccount.getInterestRate())
         .isActive(bankAccount.getIsActive())
+        .note(bankAccount.getNote())
+        .currencyCode(bankAccount.getCcy().name())
         .createdTimestamp(currentTime)
         .lastUpdatedTimestamp(currentTime)
         .build();
@@ -188,6 +190,8 @@ public class BankAccountDaoImpl implements BankAccountDao {
         .setOverdraftBalance(bankAccountEntity.getOverdraftBalance())
         .setInterestRate(bankAccountEntity.getInterestRate())
         .setIsActive(bankAccountEntity.getIsActive())
+        .setNote(bankAccountEntity.getNote())
+        .setCcy(BankProto.CurrencyCode.valueOf(bankAccountEntity.getCurrencyCode()))
         .setCreatedAt(fromInstant(bankAccountEntity.getCreatedTimestamp()))
         .setLastUpdatedAt(fromInstant(bankAccountEntity.getLastUpdatedTimestamp()))
         .build();
