@@ -62,8 +62,7 @@ public class BankAccountController {
 
   @GetMapping("/bank-accounts")
   public BankProto.BankAccounts getBankAccounts(
-      @RequestParam("field") String field, // NAME, IFSC, EMPTY - return
-      // all if EMPTY
+      @RequestParam("field") String field, // NAME, IFSC, ALL
       @RequestParam(value = "value", required = false) String value) {
     log.info("Received '{}' to list bank accounts for field '{}'", value, field);
     BankProto.BankAccounts.Builder bankAccounts = BankProto.BankAccounts.newBuilder();

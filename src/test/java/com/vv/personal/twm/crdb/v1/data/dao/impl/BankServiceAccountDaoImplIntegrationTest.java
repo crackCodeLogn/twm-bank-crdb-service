@@ -9,6 +9,7 @@ import com.vv.personal.twm.crdb.v1.service.BankService;
 import com.vv.personal.twm.crdb.v1.util.BankHelperUtil;
 import java.time.Instant;
 import java.util.Optional;
+import java.util.OptionalDouble;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -141,11 +142,15 @@ class BankServiceAccountDaoImplIntegrationTest {
     assertEquals(3, bankAccountsList3.get().getAccountsCount());
 
     // get balance
-    assertEquals(5.23, bankAccountDao.getBankAccountBalance(bankAccountId3));
+    OptionalDouble optionalDouble = bankAccountDao.getBankAccountBalance(bankAccountId3);
+    assertTrue(optionalDouble.isPresent());
+    assertEquals(5.23, optionalDouble.getAsDouble());
 
     // update balances
     assertTrue(bankAccountDao.updateBankAccountBalance(bankAccountId1, 10001.51));
-    assertEquals(10001.51, bankAccountDao.getBankAccountBalance(bankAccountId1));
+    optionalDouble = bankAccountDao.getBankAccountBalance(bankAccountId1);
+    assertTrue(optionalDouble.isPresent());
+    assertEquals(10001.51, optionalDouble.getAsDouble());
 
     // delete bank account
     assertTrue(bankAccountDao.deleteBankAccount(bankAccountId1));
