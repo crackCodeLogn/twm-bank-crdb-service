@@ -87,6 +87,30 @@ public class BankAccountController {
     return bankAccounts.build();
   }
 
+  @GetMapping("/bank-account/{id}")
+  public BankProto.BankAccount getBankAccount(@PathVariable("id") String id) {
+    log.info("Received request to get bank account for id: {}", id);
+    return bankAccountService.getBankAccount(id).orElse(BankProto.BankAccount.newBuilder().build());
+  }
+
+  @GetMapping("/bank-account/{id}/balance")
+  public BankProto.BankAccount getBankAccountBalance(@PathVariable("id") String id) {
+    log.info("Received request to get balance of bank account for id: {}", id);
+    return bankAccountService
+        .getBankAccountBalance(id)
+        .orElse(BankProto.BankAccount.newBuilder().build());
+  }
+
+  @PatchMapping("/bank-account/{id}/balance")
+  public boolean updateBankAccountBalance(
+      @PathVariable("id") String id, @RequestBody BankProto.BankAccount bankAccount) {
+    log.info(
+        "Received request to update balance of bank account for id: {} to {}",
+        id,
+        bankAccount.getBalance());
+    return bankAccountService.updateBankAccountBalance(id, bankAccount.getBalance());
+  }
+
   @DeleteMapping("/bank-account/{id}")
   public boolean deleteBankAccount(@PathVariable("id") String id) {
     log.info("Received request to del bank account for id: {}", id);

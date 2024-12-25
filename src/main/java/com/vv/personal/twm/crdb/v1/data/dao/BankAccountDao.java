@@ -4,6 +4,7 @@ import com.vv.personal.twm.artifactory.generated.bank.BankProto;
 import com.vv.personal.twm.crdb.v1.data.entity.BankAccountEntity;
 import java.util.List;
 import java.util.Optional;
+import java.util.OptionalDouble;
 
 /**
  * @author Vivek
@@ -25,7 +26,7 @@ public interface BankAccountDao {
 
   boolean updateBankAccountBalance(String id, double amount);
 
-  Double getBankAccountBalance(String id);
+  OptionalDouble getBankAccountBalance(String id);
 
   boolean deleteBankAccount(String id);
 

@@ -4,6 +4,7 @@ import com.vv.personal.twm.artifactory.generated.bank.BankProto;
 import com.vv.personal.twm.crdb.v1.data.dao.BankAccountDao;
 import com.vv.personal.twm.crdb.v1.service.BankAccountService;
 import java.util.Optional;
+import java.util.OptionalDouble;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -56,8 +57,16 @@ public class BankAccountServiceImpl implements BankAccountService {
   }
 
   @Override
-  public Double getBankAccountBalance(String id) {
-    return bankAccountDao.getBankAccountBalance(id);
+  public Optional<BankProto.BankAccount> getBankAccountBalance(String id) {
+    OptionalDouble optionalDouble = bankAccountDao.getBankAccountBalance(id);
+    if (optionalDouble.isPresent()) {
+      return Optional.of(
+          BankProto.BankAccount.newBuilder()
+              .setId(id)
+              .setBalance(optionalDouble.getAsDouble())
+              .build());
+    }
+    return Optional.empty();
   }
 
   @Override

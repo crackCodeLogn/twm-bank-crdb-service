@@ -23,7 +23,7 @@ public interface BankAccountService extends BackUpAndRestore {
 
   boolean updateBankAccountBalance(String id, double amount);
 
-  Double getBankAccountBalance(String id);
+  Optional<BankProto.BankAccount> getBankAccountBalance(String id);
 
   boolean deleteBankAccount(String id);
 }

@@ -9,6 +9,7 @@ import com.vv.personal.twm.crdb.v1.data.repository.BankAccountRepository;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
+import java.util.OptionalDouble;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -129,8 +130,10 @@ public class BankAccountDaoImpl implements BankAccountDao {
   }
 
   @Override
-  public Double getBankAccountBalance(String id) {
-    return getBankAccount(id).orElse(BankProto.BankAccount.newBuilder().build()).getBalance();
+  public OptionalDouble getBankAccountBalance(String id) {
+    return getBankAccount(id)
+        .map(bankAccount -> OptionalDouble.of(bankAccount.getBalance()))
+        .orElseGet(OptionalDouble::empty);
   }
 
   @Override
