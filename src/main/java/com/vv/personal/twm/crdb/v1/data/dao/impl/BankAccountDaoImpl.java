@@ -118,6 +118,7 @@ public class BankAccountDaoImpl implements BankAccountDao {
       if (bankAccountEntityOptional.isPresent()) {
         BankAccountEntity bankAccountEntity = bankAccountEntityOptional.get();
         bankAccountEntity.setBalance(amount);
+        bankAccountEntity.setLastUpdatedTimestamp(Instant.now());
         bankAccountRepository.saveAndFlush(bankAccountEntity);
         return true;
       } else {
