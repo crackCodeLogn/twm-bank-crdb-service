@@ -1,7 +1,6 @@
 package com.vv.personal.twm.crdb.v1.service;
 
 import com.vv.personal.twm.artifactory.generated.deposit.FixedDepositProto;
-
 import java.util.List;
 
 /**
@@ -9,29 +8,29 @@ import java.util.List;
  * @since 09/03/22
  */
 public interface FixedDeposit extends BackUpAndRestore {
-    boolean addFixedDeposit(FixedDepositProto.FixedDeposit fixedDeposit);
+  boolean addFixedDeposit(FixedDepositProto.FixedDeposit fixedDeposit);
 
-    int addFixedDeposits(FixedDepositProto.FixedDepositList fixedDepositList);
+  int addFixedDeposits(FixedDepositProto.FixedDepositList fixedDepositList);
 
-    FixedDepositProto.FixedDeposit getFixedDeposit(String fdNumber);
+  FixedDepositProto.FixedDeposit getFixedDeposit(String fdNumber);
 
-    FixedDepositProto.FixedDepositList getFixedDeposits();
+  FixedDepositProto.FixedDepositList getFixedDeposits();
 
-    boolean deleteFixedDeposit(String fdNumber);
+  boolean deleteFixedDeposit(String fdNumber);
 
-    boolean deleteFixedDeposits();
+  boolean deleteFixedDeposits();
 
-    List<FixedDepositProto.FixedDeposit> getAllByBank(String bank);
+  List<FixedDepositProto.FixedDeposit> getAllByBank(String bank);
 
-    List<FixedDepositProto.FixedDeposit> getAllByUser(String user);
+  List<FixedDepositProto.FixedDeposit> getAllByUser(String user);
 
-    List<FixedDepositProto.FixedDeposit> getAllByOriginalUser(String originalUser);
+  List<FixedDepositProto.FixedDeposit> getAllByOriginalUser(String originalUser);
 
-    List<FixedDepositProto.FixedDeposit> getAllByFdNumber(String fdNumber);
+  List<FixedDepositProto.FixedDeposit> getAllByFdNumber(String fdNumber);
 
-    boolean updateFixedDepositActiveStatus(String fdNumber, Boolean isActive);
+  boolean updateFixedDepositActiveStatus(String fdNumber, Boolean isActive);
 
-    boolean freezeTotalAmount(String fdNumber, Double totalAmount);
+  boolean freezeTotalAmount(String fdNumber, Double totalAmount);
 
-    boolean expireNrFd(String fdNumber);
+  boolean expireNrFd(String fdNumber);
 }
