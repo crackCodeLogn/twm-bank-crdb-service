@@ -1,7 +1,7 @@
 package com.vv.personal.twm.crdb.v1.remote;
 
 import com.vv.personal.twm.artifactory.generated.deposit.FixedDepositProto;
-import com.vv.personal.twm.crdb.v1.service.FixedDeposit;
+import com.vv.personal.twm.crdb.v1.service.FixedDepositService;
 import com.vv.personal.twm.crdb.v1.util.BankHelperUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,13 +16,13 @@ import org.springframework.web.bind.annotation.*;
 @RestController("bank-fd-controller")
 @RequestMapping("/crdb/bank/")
 public class BankFixedDepositController {
-  private final FixedDeposit fixedDeposit;
+  private final FixedDepositService fixedDepositService;
 
   @PostMapping("/fixed-deposit")
   public String addFixedDeposit(@RequestBody FixedDepositProto.FixedDeposit fixedDepositData) {
     log.info("Received request to add '{}' FD into db", fixedDepositData.getFdNumber());
     try {
-      boolean added = fixedDeposit.addFixedDeposit(fixedDepositData);
+      boolean added = fixedDepositService.addFixedDeposit(fixedDepositData);
       if (added) return "Done";
       return "Failed";
     } catch (Exception e) {
@@ -35,7 +35,7 @@ public class BankFixedDepositController {
   public String addFixedDeposits(@RequestBody FixedDepositProto.FixedDepositList fixedDepositList) {
     log.info("Received request to add '{}' FDs into db", fixedDepositList.getFixedDepositCount());
     try {
-      int added = fixedDeposit.addFixedDeposits(fixedDepositList);
+      int added = fixedDepositService.addFixedDeposits(fixedDepositList);
       if (added == fixedDepositList.getFixedDepositCount()) {
         log.info("Added {} FDs!", added);
         return "OK";
@@ -59,19 +59,20 @@ public class BankFixedDepositController {
       FixedDepositProto.FilterBy filterBy = FixedDepositProto.FilterBy.valueOf(field);
       switch (filterBy) {
         case BANK:
-          fixedDeposits.addAllFixedDeposit(fixedDeposit.getAllByBank(value));
+          fixedDeposits.addAllFixedDeposit(fixedDepositService.getAllByBank(value));
           break;
         case USER:
-          fixedDeposits.addAllFixedDeposit(fixedDeposit.getAllByUser(value));
+          fixedDeposits.addAllFixedDeposit(fixedDepositService.getAllByUser(value));
           break;
         case ORIGINAL_USER:
-          fixedDeposits.addAllFixedDeposit(fixedDeposit.getAllByOriginalUser(value));
+          fixedDeposits.addAllFixedDeposit(fixedDepositService.getAllByOriginalUser(value));
           break;
         case KEY:
-          fixedDeposits.addAllFixedDeposit(fixedDeposit.getAllByFdNumber(value));
+          fixedDeposits.addAllFixedDeposit(fixedDepositService.getAllByFdNumber(value));
           break;
         default:
-          fixedDeposits.addAllFixedDeposit(fixedDeposit.getFixedDeposits().getFixedDepositList());
+          fixedDeposits.addAllFixedDeposit(
+              fixedDepositService.getFixedDeposits().getFixedDepositList());
       }
     } catch (Exception e) {
       log.error("Failed to list {}: {} from crdb! ", field, value, e);
@@ -100,7 +101,7 @@ public class BankFixedDepositController {
   public String updateFixedDeposit(
       @PathVariable("fd") String fdNumber, @RequestParam("active") Boolean isActive) {
     log.info("Going to update FD with key: {} with active status: {}", fdNumber, isActive);
-    if (fixedDeposit.updateFixedDepositActiveStatus(fdNumber, isActive)) return "OK";
+    if (fixedDepositService.updateFixedDepositActiveStatus(fdNumber, isActive)) return "OK";
     return "FAILED";
   }
 
@@ -108,27 +109,27 @@ public class BankFixedDepositController {
   public String freezeTotalAmount(
       @PathVariable("fd") String fdNumber, @RequestParam("totalAmount") Double totalAmount) {
     log.info("Going to freeze FD with key: {} with total amount: {}", fdNumber, totalAmount);
-    if (fixedDeposit.freezeTotalAmount(fdNumber, totalAmount)) return "OK";
+    if (fixedDepositService.freezeTotalAmount(fdNumber, totalAmount)) return "OK";
     return "FAILED";
   }
 
   @PutMapping("/fixed-deposits/{fd}/expire/nr")
   public String expireNrFd(@PathVariable("fd") String fdNumber) {
     log.info("Going to expire NR FD with key: {}", fdNumber);
-    if (fixedDeposit.expireNrFd(fdNumber)) return "OK";
+    if (fixedDepositService.expireNrFd(fdNumber)) return "OK";
     return "FAILED";
   }
 
   @DeleteMapping("/fixed-deposits/{fd-number}")
   public boolean deleteFixedDeposit(@PathVariable("fd-number") String fdNumber) {
     log.info("Received request to del FD for fd number: {}", fdNumber);
-    return fixedDeposit.deleteFixedDeposit(fdNumber);
+    return fixedDepositService.deleteFixedDeposit(fdNumber);
   }
 
   @DeleteMapping("/fixed-deposits")
   public boolean deleteFixedDeposits() {
     log.info("Received request to del all FDs");
-    return fixedDeposit.deleteFixedDeposits();
+    return fixedDepositService.deleteFixedDeposits();
   }
 
   @GetMapping("/fixed-deposits/backup")
@@ -144,7 +145,7 @@ public class BankFixedDepositController {
     String destinationFileName = String.format("%s-%s.csv", "FixedDeposits", zonedDateTime);
     boolean result =
         BankHelperUtil.writeToFile(
-            fixedDeposit.extractDataInDelimitedFormat(delimiter),
+            fixedDepositService.extractDataInDelimitedFormat(delimiter),
             destinationFolder,
             destinationFileName);
     log.info("Backup creation result: {} for {}", result, destinationFileName);
@@ -171,8 +172,8 @@ public class BankFixedDepositController {
             .setIsFdActive(true)
             .build();
 
-    fixedDeposit.addFixedDeposit(data);
-    fixedDeposit.addFixedDeposits(
+    fixedDepositService.addFixedDeposit(data);
+    fixedDepositService.addFixedDeposits(
         FixedDepositProto.FixedDepositList.newBuilder().addFixedDeposit(data).build());
   }
 }

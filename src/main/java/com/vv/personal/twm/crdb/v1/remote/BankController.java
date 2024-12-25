@@ -1,7 +1,7 @@
 package com.vv.personal.twm.crdb.v1.remote;
 
 import com.vv.personal.twm.artifactory.generated.bank.BankProto;
-import com.vv.personal.twm.crdb.v1.service.Bank;
+import com.vv.personal.twm.crdb.v1.service.BankService;
 import com.vv.personal.twm.crdb.v1.util.BankHelperUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,13 +16,13 @@ import org.springframework.web.bind.annotation.*;
 @RestController("bank-controller")
 @RequestMapping("/crdb/bank/")
 public class BankController {
-  private final Bank bank;
+  private final BankService bankService;
 
   @PostMapping("/bank")
   public String addBank(@RequestBody BankProto.Bank bankData) {
     log.info("Received request to add '{}' bank into db", bankData.getIFSC());
     try {
-      boolean result = bank.addBank(bankData);
+      boolean result = bankService.addBank(bankData);
       if (result) return "Done";
       return "Failed";
     } catch (Exception e) {
@@ -35,7 +35,7 @@ public class BankController {
   public String addBanks(@RequestBody BankProto.BankList bankList) {
     log.info("Received request to add '{}' banks into db", bankList.getBanksCount());
     try {
-      int added = bank.addBanks(bankList);
+      int added = bankService.addBanks(bankList);
       if (added == bankList.getBanksCount()) {
         log.info("Added {} banks!", added);
         return "OK";
@@ -56,16 +56,16 @@ public class BankController {
     try {
       switch (field) {
         case "NAME":
-          banks.addAllBanks(bank.getAllByName(value));
+          banks.addAllBanks(bankService.getAllByName(value));
           break;
         case "TYPE":
-          banks.addAllBanks(bank.getAllByType(value));
+          banks.addAllBanks(bankService.getAllByType(value));
           break;
         case "IFSC":
-          banks.addAllBanks(bank.getAllByIfsc(value));
+          banks.addAllBanks(bankService.getAllByIfsc(value));
           break;
         default:
-          banks.addAllBanks(bank.getBanks().getBanksList());
+          banks.addAllBanks(bankService.getBanks().getBanksList());
       }
     } catch (Exception e) {
       log.error("Failed to list {}: {} from crdb! ", field, value, e);
@@ -76,13 +76,13 @@ public class BankController {
   @DeleteMapping("/banks/{ifsc}")
   public boolean deleteBank(@PathVariable("ifsc") String ifsc) {
     log.info("Received request to del bank for ifsc: {}", ifsc);
-    return bank.deleteBank(ifsc);
+    return bankService.deleteBank(ifsc);
   }
 
   @DeleteMapping("/banks")
   public boolean deleteBanks() {
     log.info("Received request to del all banks");
-    return bank.deleteBanks();
+    return bankService.deleteBanks();
   }
 
   @GetMapping("/banks/backup")
@@ -98,7 +98,9 @@ public class BankController {
     String destinationFileName = String.format("%s-%s.csv", "Banks", zonedDateTime);
     boolean result =
         BankHelperUtil.writeToFile(
-            bank.extractDataInDelimitedFormat(delimiter), destinationFolder, destinationFileName);
+            bankService.extractDataInDelimitedFormat(delimiter),
+            destinationFolder,
+            destinationFileName);
     log.info("Backup creation result: {} for {}", result, destinationFileName);
     return result;
   }
@@ -116,6 +118,6 @@ public class BankController {
             .build();
 
     // bank.addBank(data);
-    bank.addBanks(BankProto.BankList.newBuilder().addBanks(data).build());
+    bankService.addBanks(BankProto.BankList.newBuilder().addBanks(data).build());
   }
 }

@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
  * @author Vivek
  * @since 10/03/22
  */
-class BankHelperUtilTest {
+class BankServiceHelperUtilTest {
 
   @Test
   void testGetDateInYyyyMmDd() {

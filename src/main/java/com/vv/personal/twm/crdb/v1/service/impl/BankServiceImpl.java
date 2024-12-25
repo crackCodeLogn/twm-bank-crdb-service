@@ -2,21 +2,21 @@ package com.vv.personal.twm.crdb.v1.service.impl;
 
 import com.vv.personal.twm.artifactory.generated.bank.BankProto;
 import com.vv.personal.twm.crdb.v1.data.dao.BankDao;
-import com.vv.personal.twm.crdb.v1.service.Bank;
+import com.vv.personal.twm.crdb.v1.service.BankService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 /**
  * @author Vivek
  * @since 09/03/22
  */
 @Slf4j
-@Component
+@Service
 @RequiredArgsConstructor
-public class BankImpl implements Bank {
+public class BankServiceImpl implements BankService {
   private final BankDao bankDao;
 
   @Override

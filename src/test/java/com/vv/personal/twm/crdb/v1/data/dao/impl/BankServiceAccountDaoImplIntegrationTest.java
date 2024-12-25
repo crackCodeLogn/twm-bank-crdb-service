@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import com.vv.personal.twm.artifactory.generated.bank.BankProto;
 import com.vv.personal.twm.crdb.v1.data.dao.BankAccountDao;
 import com.vv.personal.twm.crdb.v1.data.repository.BankAccountRepository;
-import com.vv.personal.twm.crdb.v1.service.Bank;
+import com.vv.personal.twm.crdb.v1.service.BankService;
 import com.vv.personal.twm.crdb.v1.util.BankHelperUtil;
 import java.time.Instant;
 import java.util.Optional;
@@ -22,10 +22,10 @@ import org.springframework.boot.test.context.SpringBootTest;
  * @since 2024-12-24
  */
 @SpringBootTest
-class BankAccountDaoImplIntegrationTest {
+class BankServiceAccountDaoImplIntegrationTest {
 
   @Autowired private BankAccountRepository bankAccountRepository;
-  @Autowired private Bank bankService;
+  @Autowired private BankService bankService;
 
   private BankAccountDao bankAccountDao;
 

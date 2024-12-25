@@ -7,7 +7,7 @@ import java.util.List;
  * @author Vivek
  * @since 09/03/22
  */
-public interface FixedDeposit extends BackUpAndRestore {
+public interface FixedDepositService extends BackUpAndRestore {
   boolean addFixedDeposit(FixedDepositProto.FixedDeposit fixedDeposit);
 
   int addFixedDeposits(FixedDepositProto.FixedDepositList fixedDepositList);
