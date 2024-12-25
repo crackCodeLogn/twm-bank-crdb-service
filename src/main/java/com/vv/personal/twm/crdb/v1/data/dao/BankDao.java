@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -47,7 +48,11 @@ public class BankDao {
     }
 
     public BankProto.Bank getBank(String ifsc) {
-        return generateBank(bankRepository.getReferenceById(ifsc));
+        Optional<BankEntity> bankAccountOptional = bankRepository.findById(ifsc);
+        if (bankAccountOptional.isPresent()) {
+            return generateBank(bankAccountOptional.get());
+        }
+        return BankProto.Bank.newBuilder().build();
     }
 
     public List<BankProto.Bank> getBanks() {

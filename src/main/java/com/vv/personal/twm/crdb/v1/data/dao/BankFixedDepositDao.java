@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -48,7 +49,11 @@ public class BankFixedDepositDao {
     }
 
     public FixedDepositProto.FixedDeposit getFixedDeposit(String fdNumber) {
-        return generateFixedDeposit(bankFixedDepositRepository.getReferenceById(fdNumber));
+        Optional<BankFixedDepositEntity> bankFixedDepositOptional = bankFixedDepositRepository.findById(fdNumber);
+        if (bankFixedDepositOptional.isPresent()) {
+            return generateFixedDeposit(bankFixedDepositOptional.get());
+        }
+        return FixedDepositProto.FixedDeposit.newBuilder().build();
     }
 
     public List<FixedDepositProto.FixedDeposit> getFixedDeposits() {
