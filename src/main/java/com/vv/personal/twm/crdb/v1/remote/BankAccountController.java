@@ -100,7 +100,8 @@ public class BankAccountController {
         .orElse(BankProto.BankAccount.newBuilder().build());
   }
 
-  @PatchMapping("/bank-account/{id}/balance")
+  // Should be PATCH, but apparently its non-standard for feign, thus falling back to POST
+  @PostMapping("/bank-account/{id}/balance")
   public boolean updateBankAccountBalance(
       @PathVariable("id") String id, @RequestBody BankProto.BankAccount bankAccount) {
     log.info(
