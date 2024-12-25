@@ -37,10 +37,10 @@ public class BankAccountEntity {
   private String name;
 
   @Column(name = "transit_number")
-  private long transitNumber;
+  private String transitNumber;
 
   @Column(name = "institution_number")
-  private long institutionNumber;
+  private String institutionNumber;
 
   @Column(name = "balance")
   private double balance;
