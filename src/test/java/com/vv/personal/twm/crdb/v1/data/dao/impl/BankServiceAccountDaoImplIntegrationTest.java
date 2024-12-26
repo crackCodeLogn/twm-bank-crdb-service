@@ -173,6 +173,23 @@ class BankServiceAccountDaoImplIntegrationTest {
     assertEquals(USD, testBankAccount.getCcy());
     assertEquals("Test note 3", testBankAccount.getNote());
 
+    // test bank account get by ccy - CAD
+    Optional<BankProto.BankAccounts> cadBankAccountsOptional =
+        bankAccountDao.getAllBankAccountsByCcy(CAD);
+    assertTrue(cadBankAccountsOptional.isPresent());
+    assertTrue(cadBankAccountsOptional.get().getAccountsCount() >= 1);
+    assertTrue(
+        cadBankAccountsOptional.get().getAccountsList().stream()
+            .anyMatch(bankAccount -> bankAccount.getId().equals(bankAccountId1)));
+    // test bank account get by ccy - INR
+    Optional<BankProto.BankAccounts> inrBankAccountsOptional =
+        bankAccountDao.getAllBankAccountsByCcy(INR);
+    assertTrue(inrBankAccountsOptional.isPresent());
+    assertTrue(inrBankAccountsOptional.get().getAccountsCount() >= 1);
+    assertTrue(
+        inrBankAccountsOptional.get().getAccountsList().stream()
+            .anyMatch(bankAccount -> bankAccount.getId().equals(bankAccountId2)));
+
     // delete bank account
     assertTrue(bankAccountDao.deleteBankAccount(bankAccountId1));
     assertTrue(bankAccountDao.deleteBankAccount(bankAccountId2));

@@ -111,6 +111,22 @@ public class BankAccountDaoImpl implements BankAccountDao {
   }
 
   @Override
+  public Optional<BankProto.BankAccounts> getAllBankAccountsByCcy(BankProto.CurrencyCode ccy) {
+    try {
+      return Optional.of(
+          BankProto.BankAccounts.newBuilder()
+              .addAllAccounts(
+                  bankAccountRepository.getAllByCurrencyCode(ccy.name()).stream()
+                      .map(this::generateBankAccount)
+                      .toList())
+              .build());
+    } catch (Exception e) {
+      log.error("Failed to get bank accounts by ccy: {}", ccy, e);
+    }
+    return Optional.empty();
+  }
+
+  @Override
   public boolean updateBankAccountBalance(String id, double amount) {
     try {
       UUID uuid = getUUID(id);

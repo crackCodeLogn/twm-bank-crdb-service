@@ -62,16 +62,28 @@ public class BankAccountController {
 
   @GetMapping("/bank-accounts")
   public BankProto.BankAccounts getBankAccounts(
-      @RequestParam("field") String field, // NAME, IFSC, ALL
+      // todo - future work -> enumify in proto the field values
+      @RequestParam("field") String field, // NAME, IFSC, CCY, ALL
       @RequestParam(value = "value", required = false) String value) {
     log.info("Received '{}' to list bank accounts for field '{}'", value, field);
     BankProto.BankAccounts.Builder bankAccounts = BankProto.BankAccounts.newBuilder();
-    Optional<BankProto.BankAccounts> optionalBankAccounts;
+    Optional<BankProto.BankAccounts> optionalBankAccounts = Optional.empty();
     try {
       optionalBankAccounts =
           switch (field) {
             case "NAME" -> bankAccountService.getAllBankAccountsByMatchingName(value);
             case "IFSC" -> bankAccountService.getAllBankAccountsByMatchingIfsc(value);
+            case "CCY" -> {
+              BankProto.CurrencyCode currencyCode = null;
+              try {
+                currencyCode = BankProto.CurrencyCode.valueOf(value);
+              } catch (IllegalArgumentException e) {
+                log.error("Failed to parse currency code '{}'", value);
+              }
+              yield currencyCode != null
+                  ? bankAccountService.getAllBankAccountsByCcy(currencyCode)
+                  : Optional.empty();
+            }
             default -> bankAccountService.getAllBankAccounts();
           };
       if (optionalBankAccounts.isPresent()) {

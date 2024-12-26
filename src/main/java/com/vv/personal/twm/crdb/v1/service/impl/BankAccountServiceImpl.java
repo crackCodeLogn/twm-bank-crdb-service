@@ -52,6 +52,11 @@ public class BankAccountServiceImpl implements BankAccountService {
   }
 
   @Override
+  public Optional<BankProto.BankAccounts> getAllBankAccountsByCcy(BankProto.CurrencyCode ccy) {
+    return bankAccountDao.getAllBankAccountsByCcy(ccy);
+  }
+
+  @Override
   public boolean updateBankAccountBalance(String id, double amount) {
     return bankAccountDao.updateBankAccountBalance(id, amount);
   }

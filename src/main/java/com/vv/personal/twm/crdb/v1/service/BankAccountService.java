@@ -21,6 +21,8 @@ public interface BankAccountService extends BackUpAndRestore {
 
   Optional<BankProto.BankAccounts> getAllBankAccountsByMatchingIfsc(String ifsc);
 
+  Optional<BankProto.BankAccounts> getAllBankAccountsByCcy(BankProto.CurrencyCode ccy);
+
   boolean updateBankAccountBalance(String id, double amount);
 
   Optional<BankProto.BankAccount> getBankAccountBalance(String id);
