@@ -84,6 +84,13 @@ public class BankServiceImpl implements BankService {
   }
 
   @Override
+  public List<BankProto.Bank> getAllByCountryCode(String countryCode) {
+    List<BankProto.Bank> result = bankDao.getAllByCountryCode(countryCode);
+    log.info("Found {} banks matching {}", result.size(), countryCode);
+    return result;
+  }
+
+  @Override
   public String extractDataInDelimitedFormat(String delimiter) {
     StringBuilder dataLines = new StringBuilder();
     bankDao

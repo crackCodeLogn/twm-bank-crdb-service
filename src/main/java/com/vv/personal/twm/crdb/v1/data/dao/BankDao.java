@@ -85,6 +85,12 @@ public class BankDao {
         .collect(Collectors.toList());
   }
 
+  public List<BankProto.Bank> getAllByCountryCode(String countryCode) {
+    return bankRepository.getAllByCountryCode(countryCode).stream()
+        .map(this::generateBank)
+        .toList();
+  }
+
   public boolean deleteBank(String ifsc) {
     try {
       bankRepository.deleteById(ifsc);

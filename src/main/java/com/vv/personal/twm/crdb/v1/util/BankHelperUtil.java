@@ -1,5 +1,7 @@
 package com.vv.personal.twm.crdb.v1.util;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.ImmutableBiMap;
 import com.google.protobuf.Timestamp;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -22,6 +24,17 @@ public final class BankHelperUtil {
       DateTimeFormatter.ofPattern("yyyyMMdd");
 
   private BankHelperUtil() {}
+
+  private static final BiMap<String, String> ccyCountryMap =
+      ImmutableBiMap.<String, String>builder().put("CAD", "CA").put("INR", "IN").build();
+
+  public static String getCountryForCcy(String ccy) {
+    return ccyCountryMap.get(ccy);
+  }
+
+  public static String getCcyForCountry(String country) {
+    return ccyCountryMap.inverse().get(country);
+  }
 
   public static String getDateInYyyyMmDd(Date date) {
     return date.toLocalDate().format(DATE_TIME_FORMATTER_YYYYMMDD);

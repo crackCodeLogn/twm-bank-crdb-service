@@ -25,4 +25,6 @@ public interface BankService extends BackUpAndRestore {
   List<BankProto.Bank> getAllByType(String type);
 
   List<BankProto.Bank> getAllByIfsc(String ifsc);
+
+  List<BankProto.Bank> getAllByCountryCode(String ccy);
 }

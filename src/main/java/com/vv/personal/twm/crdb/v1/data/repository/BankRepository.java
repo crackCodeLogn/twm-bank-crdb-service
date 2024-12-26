@@ -22,4 +22,6 @@ public interface BankRepository extends JpaRepository<BankEntity, String> {
 
   @Query(value = "SELECT * from bank where name ~ :ifsc", nativeQuery = true)
   List<BankEntity> getAllByMatchingIfsc(@Param("ifsc") String ifsc);
+
+  List<BankEntity> getAllByCountryCode(String countryCode);
 }

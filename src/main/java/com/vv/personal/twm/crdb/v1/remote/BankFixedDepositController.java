@@ -1,8 +1,13 @@
 package com.vv.personal.twm.crdb.v1.remote;
 
+import com.vv.personal.twm.artifactory.generated.bank.BankProto;
 import com.vv.personal.twm.artifactory.generated.deposit.FixedDepositProto;
+import com.vv.personal.twm.crdb.v1.service.BankService;
 import com.vv.personal.twm.crdb.v1.service.FixedDepositService;
 import com.vv.personal.twm.crdb.v1.util.BankHelperUtil;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/crdb/bank/")
 public class BankFixedDepositController {
   private final FixedDepositService fixedDepositService;
+  private final BankService bankService;
 
   @PostMapping("/fixed-deposit")
   public String addFixedDeposit(@RequestBody FixedDepositProto.FixedDeposit fixedDepositData) {
@@ -70,6 +76,19 @@ public class BankFixedDepositController {
         case KEY:
           fixedDeposits.addAllFixedDeposit(fixedDepositService.getAllByFdNumber(value));
           break;
+        case CCY:
+          String countryCode = BankHelperUtil.getCountryForCcy(value);
+          Set<String> ccyBankIfscs =
+              bankService.getAllByCountryCode(countryCode).stream()
+                  .map(BankProto.Bank::getIFSC)
+                  .collect(Collectors.toSet());
+          List<FixedDepositProto.FixedDeposit> ccyFixedDeposits =
+              fixedDepositService.getFixedDeposits().getFixedDepositList().stream()
+                  .filter(fixedDeposit -> ccyBankIfscs.contains(fixedDeposit.getBankIFSC()))
+                  .toList();
+          fixedDeposits.addAllFixedDeposit(ccyFixedDeposits);
+          break;
+
         default:
           fixedDeposits.addAllFixedDeposit(
               fixedDepositService.getFixedDeposits().getFixedDepositList());
