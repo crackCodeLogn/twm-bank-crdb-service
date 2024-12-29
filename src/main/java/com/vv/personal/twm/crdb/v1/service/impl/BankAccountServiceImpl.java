@@ -97,7 +97,9 @@ public class BankAccountServiceImpl implements BankAccountService {
                             bankAccountEntity.getTransitNumber(),
                             bankAccountEntity.getInstitutionNumber(),
                             bankAccountEntity.getBalance(),
-                            bankAccountEntity.getBankAccountType(),
+                            bankAccountEntity
+                                .getBankAccountTypes(), // currently separated by |, so be careful
+                            // with delimiter
                             bankAccountEntity.getMetaData(),
                             bankAccountEntity.getOverdraftBalance(),
                             bankAccountEntity.getInterestRate(),

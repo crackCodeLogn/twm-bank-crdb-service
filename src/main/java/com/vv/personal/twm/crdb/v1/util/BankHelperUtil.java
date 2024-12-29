@@ -3,6 +3,7 @@ package com.vv.personal.twm.crdb.v1.util;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
 import com.google.protobuf.Timestamp;
+import com.vv.personal.twm.artifactory.generated.bank.BankProto;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.Date;
@@ -11,8 +12,12 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author Vivek
@@ -79,5 +84,17 @@ public final class BankHelperUtil {
 
   public static String getUUIDString(UUID uuid) {
     return uuid.toString();
+  }
+
+  public static List<BankProto.BankAccountType> getListBankAccountTypes(String bankAccountTypes) {
+    return Arrays.stream(bankAccountTypes.split("\\|"))
+        .map(BankProto.BankAccountType::valueOf)
+        .collect(Collectors.toList());
+  }
+
+  public static String getStringBankAccountTypes(
+      List<BankProto.BankAccountType> bankAccountTypesList) {
+    return StringUtils.join(
+        bankAccountTypesList.stream().map(BankProto.BankAccountType::name).toList(), "|");
   }
 }

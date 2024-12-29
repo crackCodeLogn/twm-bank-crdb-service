@@ -3,16 +3,14 @@ package com.vv.personal.twm.crdb.v1.data.dao.impl;
 import static com.vv.personal.twm.artifactory.generated.bank.BankProto.CurrencyCode.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.google.common.collect.Lists;
 import com.vv.personal.twm.artifactory.generated.bank.BankProto;
 import com.vv.personal.twm.crdb.v1.data.dao.BankAccountDao;
 import com.vv.personal.twm.crdb.v1.data.repository.BankAccountRepository;
 import com.vv.personal.twm.crdb.v1.service.BankService;
 import com.vv.personal.twm.crdb.v1.util.BankHelperUtil;
 import java.time.Instant;
-import java.util.Optional;
-import java.util.OptionalDouble;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -51,7 +49,7 @@ class BankServiceAccountDaoImplIntegrationTest {
             .setTransitNumber("999")
             .setInstitutionNumber("9999")
             .setBalance(91.19)
-            .setBankAccountType(BankProto.BankAccountType.CHQ)
+            .addBankAccountTypes(BankProto.BankAccountType.CHQ)
             .setOverdraftBalance(100)
             .setInterestRate(0.05)
             .setIsActive(true)
@@ -99,7 +97,7 @@ class BankServiceAccountDaoImplIntegrationTest {
             .setTransitNumber("998")
             .setInstitutionNumber("9998")
             .setBalance(5.23)
-            .setBankAccountType(BankProto.BankAccountType.HISA)
+            .addBankAccountTypes(BankProto.BankAccountType.HISA)
             .setOverdraftBalance(100)
             .setInterestRate(3.0)
             .setIsActive(true)
@@ -118,7 +116,7 @@ class BankServiceAccountDaoImplIntegrationTest {
             .setTransitNumber("998")
             .setInstitutionNumber("9998")
             .setBalance(5.23)
-            .setBankAccountType(BankProto.BankAccountType.SAV)
+            .addBankAccountTypes(BankProto.BankAccountType.SAV)
             .setOverdraftBalance(100)
             .setInterestRate(1.5)
             .setIsActive(true)
@@ -190,10 +188,38 @@ class BankServiceAccountDaoImplIntegrationTest {
         inrBankAccountsOptional.get().getAccountsList().stream()
             .anyMatch(bankAccount -> bankAccount.getId().equals(bankAccountId2)));
 
+    // test multi-bank account type tags in one account
+    String bankAccountId4 = UUID.randomUUID().toString();
+    BankProto.BankAccount bankAccount4 =
+        BankProto.BankAccount.newBuilder()
+            .setId(bankAccountId4)
+            .setBank(BankProto.Bank.newBuilder().setIFSC("TESTB-001"))
+            .setNumber("1234567890232432")
+            .setName("Sample 004")
+            .setTransitNumber("998")
+            .setInstitutionNumber("9998")
+            .setBalance(5.23)
+            .addAllBankAccountTypes(
+                Lists.newArrayList(BankProto.BankAccountType.TFSA, BankProto.BankAccountType.MKT))
+            .setOverdraftBalance(100)
+            .setInterestRate(1.5)
+            .setIsActive(true)
+            .setNote("Test note 4")
+            .setCcy(BankProto.CurrencyCode.USD)
+            .build();
+    assertTrue(bankAccountDao.addBankAccount(bankAccount4));
+    Optional<BankProto.BankAccount> optionalBankAccount4 =
+        bankAccountDao.getBankAccount(bankAccountId4);
+    assertTrue(optionalBankAccount4.isPresent());
+    assertEquals(
+        Lists.newArrayList(BankProto.BankAccountType.TFSA, BankProto.BankAccountType.MKT),
+        optionalBankAccount4.get().getBankAccountTypesList());
+
     // delete bank account
     assertTrue(bankAccountDao.deleteBankAccount(bankAccountId1));
     assertTrue(bankAccountDao.deleteBankAccount(bankAccountId2));
     assertTrue(bankAccountDao.deleteBankAccount(bankAccountId3));
+    assertTrue(bankAccountDao.deleteBankAccount(bankAccountId4));
 
     // clean up
     assertTrue(bankService.deleteBank("TESTB-001"));

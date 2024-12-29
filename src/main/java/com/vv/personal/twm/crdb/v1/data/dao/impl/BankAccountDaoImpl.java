@@ -7,10 +7,7 @@ import com.vv.personal.twm.crdb.v1.data.dao.BankAccountDao;
 import com.vv.personal.twm.crdb.v1.data.entity.BankAccountEntity;
 import com.vv.personal.twm.crdb.v1.data.repository.BankAccountRepository;
 import java.time.Instant;
-import java.util.List;
-import java.util.Optional;
-import java.util.OptionalDouble;
-import java.util.UUID;
+import java.util.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -179,7 +176,7 @@ public class BankAccountDaoImpl implements BankAccountDao {
         .transitNumber(bankAccount.getTransitNumber())
         .institutionNumber(bankAccount.getInstitutionNumber())
         .balance(bankAccount.getBalance())
-        .bankAccountType(bankAccount.getBankAccountType().name())
+        .bankAccountTypes(getStringBankAccountTypes(bankAccount.getBankAccountTypesList()))
         //                .metaData(bankAccount.getMetaDataMap().toString()) // todo - use better
         // map -> string converter
         .overdraftBalance(bankAccount.getOverdraftBalance())
@@ -201,8 +198,7 @@ public class BankAccountDaoImpl implements BankAccountDao {
         .setTransitNumber(bankAccountEntity.getTransitNumber())
         .setInstitutionNumber(bankAccountEntity.getInstitutionNumber())
         .setBalance(bankAccountEntity.getBalance())
-        .setBankAccountType(
-            BankProto.BankAccountType.valueOf(bankAccountEntity.getBankAccountType()))
+        .addAllBankAccountTypes(getListBankAccountTypes(bankAccountEntity.getBankAccountTypes()))
         .setOverdraftBalance(bankAccountEntity.getOverdraftBalance())
         .setInterestRate(bankAccountEntity.getInterestRate())
         .setIsActive(bankAccountEntity.getIsActive())

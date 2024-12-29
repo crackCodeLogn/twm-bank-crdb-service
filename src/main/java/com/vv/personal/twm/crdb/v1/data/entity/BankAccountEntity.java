@@ -45,8 +45,8 @@ public class BankAccountEntity {
   @Column(name = "balance")
   private double balance;
 
-  @Column(name = "bank_account_type")
-  private String bankAccountType;
+  @Column(name = "bank_account_types")
+  private String bankAccountTypes;
 
   @Column(name = "meta_data")
   private String metaData;
@@ -82,7 +82,7 @@ public class BankAccountEntity {
         .append("transitNumber", transitNumber)
         .append("institutionNumber", institutionNumber)
         .append("balance", balance)
-        .append("bankAccountType", bankAccountType)
+        .append("bankAccountTypes", bankAccountTypes)
         .append("metaData", metaData)
         .append("overdraftBalance", overdraftBalance)
         .append("interestRate", interestRate)

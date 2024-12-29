@@ -25,3 +25,6 @@ alter table bank_account
 
 alter table bank_account
     add column CCY VARCHAR(10) DEFAULT 'CAD';
+
+alter table bank_account
+    rename column bank_account_type to bank_account_types;
