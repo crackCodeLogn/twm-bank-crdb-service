@@ -135,6 +135,7 @@ public class BankFixedDepositDao {
   FixedDepositProto.FixedDeposit generateFixedDeposit(BankFixedDepositEntity fixedDeposit) {
     return FixedDepositProto.FixedDeposit.newBuilder()
         .setFdNumber(fixedDeposit.getFdNumber())
+        .setExternalId(fixedDeposit.getExternalId())
         .setUser(fixedDeposit.getUserFd())
         .setOriginalUser(fixedDeposit.getOriginalUserFd())
         .setCustomerId(fixedDeposit.getCustomerId())
@@ -159,6 +160,7 @@ public class BankFixedDepositDao {
       FixedDepositProto.FixedDeposit fixedDeposit, Instant instant) {
     return BankFixedDepositEntity.builder()
         .fdNumber(fixedDeposit.getFdNumber())
+        .externalId(BankHelperUtil.generateSha512Hash(fixedDeposit.getFdNumber()))
         .accountType(fixedDeposit.getAccountTypeValue())
         .userFd(fixedDeposit.getUser())
         .originalUserFd(fixedDeposit.getOriginalUser())

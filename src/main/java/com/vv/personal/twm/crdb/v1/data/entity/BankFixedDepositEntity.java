@@ -27,6 +27,9 @@ public class BankFixedDepositEntity {
   @Column(name = "fd_number")
   private String fdNumber;
 
+  @Column(name = "external_id")
+  private String externalId;
+
   @Column(name = "user_fd")
   private String userFd;
 
@@ -87,6 +90,7 @@ public class BankFixedDepositEntity {
   public String toString() {
     return new ToStringBuilder(this, ToStringStyle.JSON_STYLE)
         .append("fdNumber", fdNumber)
+        .append("externalId", externalId)
         .append("accType", accountType)
         .append("userFd", userFd)
         .append("customerId", customerId)

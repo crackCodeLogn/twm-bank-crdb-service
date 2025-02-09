@@ -2,10 +2,12 @@ package com.vv.personal.twm.crdb.v1.util;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
+import com.google.common.hash.Hashing;
 import com.google.protobuf.Timestamp;
 import com.vv.personal.twm.artifactory.generated.bank.BankProto;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.sql.Date;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -96,5 +98,9 @@ public final class BankHelperUtil {
       List<BankProto.BankAccountType> bankAccountTypesList) {
     return StringUtils.join(
         bankAccountTypesList.stream().map(BankProto.BankAccountType::name).toList(), "|");
+  }
+
+  public static String generateSha512Hash(String data) {
+    return Hashing.sha512().hashString(data, StandardCharsets.UTF_8).toString();
   }
 }

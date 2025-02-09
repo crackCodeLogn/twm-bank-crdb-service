@@ -31,6 +31,9 @@ public class BankEntity {
   @Column(name = "ifsc")
   private String ifsc;
 
+  @Column(name = "external_id")
+  private String externalId;
+
   @Column(name = "country_code")
   private String countryCode;
 
@@ -51,6 +54,7 @@ public class BankEntity {
     return new ToStringBuilder(this, ToStringStyle.JSON_STYLE)
         .append("bankName", bankName)
         .append("ifsc", ifsc)
+        .append("externalId", externalId)
         .append("countryCode", countryCode)
         .append("contactNumber", contactNumber)
         .append("bankType", bankType)

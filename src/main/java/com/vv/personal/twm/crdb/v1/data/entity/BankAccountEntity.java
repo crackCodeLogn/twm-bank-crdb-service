@@ -27,6 +27,9 @@ public class BankAccountEntity {
   @Column(name = "id")
   private UUID id;
 
+  @Column(name = "external_id")
+  private String externalId;
+
   @Column(name = "bank_ifsc")
   private String bankIfsc;
 
@@ -76,6 +79,7 @@ public class BankAccountEntity {
   public String toString() {
     return new ToStringBuilder(this, ToStringStyle.JSON_STYLE)
         .append("id", id)
+        .append("externalId", externalId)
         .append("name", name)
         .append("bankIfsc", bankIfsc)
         .append("accountNumber", accountNumber)

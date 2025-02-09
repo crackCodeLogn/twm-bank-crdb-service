@@ -6,6 +6,7 @@ import com.vv.personal.twm.artifactory.generated.bank.BankProto;
 import com.vv.personal.twm.crdb.v1.data.dao.BankAccountDao;
 import com.vv.personal.twm.crdb.v1.data.entity.BankAccountEntity;
 import com.vv.personal.twm.crdb.v1.data.repository.BankAccountRepository;
+import com.vv.personal.twm.crdb.v1.util.BankHelperUtil;
 import java.time.Instant;
 import java.util.*;
 import lombok.RequiredArgsConstructor;
@@ -170,6 +171,7 @@ public class BankAccountDaoImpl implements BankAccountDao {
       BankProto.BankAccount bankAccount, Instant currentTime) {
     return BankAccountEntity.builder()
         .id(getUUID(bankAccount.getId()))
+        .externalId(BankHelperUtil.generateSha512Hash(bankAccount.getId()))
         .bankIfsc(bankAccount.getBank().getIFSC())
         .accountNumber(bankAccount.getNumber())
         .name(bankAccount.getName())
@@ -193,6 +195,7 @@ public class BankAccountDaoImpl implements BankAccountDao {
     return BankProto.BankAccount.newBuilder()
         .setBank(BankProto.Bank.newBuilder().setIFSC(bankAccountEntity.getBankIfsc()))
         .setId(getUUIDString(bankAccountEntity.getId()))
+        .setExternalId(bankAccountEntity.getExternalId())
         .setNumber(bankAccountEntity.getAccountNumber())
         .setName(bankAccountEntity.getName())
         .setTransitNumber(bankAccountEntity.getTransitNumber())

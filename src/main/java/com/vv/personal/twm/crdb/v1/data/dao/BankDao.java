@@ -3,6 +3,7 @@ package com.vv.personal.twm.crdb.v1.data.dao;
 import com.vv.personal.twm.artifactory.generated.bank.BankProto;
 import com.vv.personal.twm.crdb.v1.data.entity.BankEntity;
 import com.vv.personal.twm.crdb.v1.data.repository.BankRepository;
+import com.vv.personal.twm.crdb.v1.util.BankHelperUtil;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
@@ -115,6 +116,7 @@ public class BankDao {
     return BankProto.Bank.newBuilder()
         .setName(bank.getBankName())
         .setIFSC(bank.getIfsc())
+        .setExternalId(bank.getExternalId())
         .setBankType(BankProto.BankType.valueOf(bank.getBankType()))
         .setContactNumber(bank.getContactNumber())
         .setCountryCode(bank.getCountryCode())
@@ -127,6 +129,7 @@ public class BankDao {
         .bankName(bank.getName())
         .bankType(bank.getBankType().name())
         .ifsc(bank.getIFSC())
+        .externalId(BankHelperUtil.generateSha512Hash(bank.getIFSC()))
         .contactNumber(bank.getContactNumber())
         .isActive(bank.getIsActive())
         .countryCode(bank.getCountryCode())
