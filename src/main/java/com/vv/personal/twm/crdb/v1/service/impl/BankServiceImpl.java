@@ -3,7 +3,7 @@ package com.vv.personal.twm.crdb.v1.service.impl;
 import com.vv.personal.twm.artifactory.generated.bank.BankProto;
 import com.vv.personal.twm.crdb.v1.data.dao.BankDao;
 import com.vv.personal.twm.crdb.v1.service.BankService;
-import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -27,25 +27,13 @@ public class BankServiceImpl implements BankService {
   }
 
   @Override
-  public int addBanks(BankProto.BankList bankList) {
-    int banksAdded = bankDao.addBanks(bankList);
-    log.info("Banks added: {}", banksAdded);
-    return banksAdded;
+  public Optional<BankProto.Bank> getBank(String ifsc) {
+    return bankDao.getBank(ifsc);
   }
 
   @Override
-  public BankProto.Bank getBank(String ifsc) {
-    BankProto.Bank bank = bankDao.getBank(ifsc);
-    log.info("Found Bank for ifsc: {}", bank);
-    return bank;
-  }
-
-  @Override
-  public BankProto.BankList getBanks() {
-    BankProto.BankList bankList =
-        BankProto.BankList.newBuilder().addAllBanks(bankDao.getBanks()).build();
-    log.info("Retrieved {} banks from db", bankList.getBanksCount());
-    return bankList;
+  public Optional<BankProto.BankList> getAllBanks() {
+    return bankDao.getAllBanks();
   }
 
   @Override
@@ -56,37 +44,38 @@ public class BankServiceImpl implements BankService {
   }
 
   @Override
-  public boolean deleteBanks() {
-    boolean delResult = bankDao.deleteBanks();
-    log.info("All Banks del result: {}", delResult);
-    return delResult;
-  }
-
-  @Override
-  public List<BankProto.Bank> getAllByName(String name) {
-    List<BankProto.Bank> result = bankDao.getAllByName(name);
-    log.info("Found {} banks matching {}", result.size(), name);
+  public Optional<BankProto.BankList> getAllByName(String name) {
+    Optional<BankProto.BankList> result = bankDao.getAllBanksByMatchingName(name);
+    if (result.isPresent())
+      log.info("Found {} banks matching {}", result.get().getBanksCount(), name);
+    else log.info("No banks matching name {}", name);
     return result;
   }
 
   @Override
-  public List<BankProto.Bank> getAllByType(String type) {
-    List<BankProto.Bank> result = bankDao.getAllByType(type);
-    log.info("Found {} banks matching {}", result.size(), type);
+  public Optional<BankProto.BankList> getAllByType(String type) {
+    Optional<BankProto.BankList> result = bankDao.getAllBanksByMatchingType(type);
+    if (result.isPresent())
+      log.info("Found {} banks matching {}", result.get().getBanksCount(), type);
+    else log.info("No banks matching type {}", type);
     return result;
   }
 
   @Override
-  public List<BankProto.Bank> getAllByIfsc(String ifsc) {
-    List<BankProto.Bank> result = bankDao.getAllByIfsc(ifsc);
-    log.info("Found {} banks matching {}", result.size(), ifsc);
+  public Optional<BankProto.BankList> getAllByIfsc(String ifsc) {
+    Optional<BankProto.BankList> result = bankDao.getAllBankByMatchingIfsc(ifsc);
+    if (result.isPresent())
+      log.info("Found {} banks matching {}", result.get().getBanksCount(), ifsc);
+    else log.info("No banks matching ifsc {}", ifsc);
     return result;
   }
 
   @Override
-  public List<BankProto.Bank> getAllByCountryCode(String countryCode) {
-    List<BankProto.Bank> result = bankDao.getAllByCountryCode(countryCode);
-    log.info("Found {} banks matching {}", result.size(), countryCode);
+  public Optional<BankProto.BankList> getAllByCountryCode(String countryCode) {
+    Optional<BankProto.BankList> result = bankDao.getAllBanksByCountryCode(countryCode);
+    if (result.isPresent())
+      log.info("Found {} banks matching {}", result.get().getBanksCount(), countryCode);
+    else log.info("No banks matching countryCode {}", countryCode);
     return result;
   }
 

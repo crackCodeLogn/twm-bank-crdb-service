@@ -3,6 +3,7 @@ package com.vv.personal.twm.crdb.v1.remote;
 import com.vv.personal.twm.artifactory.generated.bank.BankProto;
 import com.vv.personal.twm.crdb.v1.service.BankService;
 import com.vv.personal.twm.crdb.v1.util.BankHelperUtil;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -35,7 +36,8 @@ public class BankController {
   public String addBanks(@RequestBody BankProto.BankList bankList) {
     log.info("Received request to add '{}' banks into db", bankList.getBanksCount());
     try {
-      int added = bankService.addBanks(bankList);
+      int added = 0;
+      for (BankProto.Bank bank : bankList.getBanksList()) if (bankService.addBank(bank)) added++;
       if (added == bankList.getBanksCount()) {
         log.info("Added {} banks!", added);
         return "OK";
@@ -47,42 +49,52 @@ public class BankController {
     return "FAILED";
   }
 
+  @GetMapping("/bank/{ifsc}")
+  public BankProto.Bank getBank(@PathVariable String ifsc) {
+    log.info("Received request to get bank from db: {}", ifsc);
+    return bankService.getBank(ifsc).orElse(BankProto.Bank.newBuilder().build());
+  }
+
   @GetMapping("/banks")
   public BankProto.BankList getBanks(
-      @RequestParam("field") String field, // NAME, TYPE, IFSC, EMPTY - return all if EMPTY
+      @RequestParam("field")
+          String field, // NAME, TYPE, IFSC, CCY (COUNTRY CODE), EMPTY - return all if EMPTY
       @RequestParam(value = "value", required = false) String value) {
     log.info("Received '{}' to list Banks for field '{}'", value, field);
-    BankProto.BankList.Builder banks = BankProto.BankList.newBuilder();
+    BankProto.BankList banks = BankProto.BankList.newBuilder().build();
+    Optional<BankProto.BankList> result;
     try {
       switch (field) {
         case "NAME":
-          banks.addAllBanks(bankService.getAllByName(value));
+          result = bankService.getAllByName(value);
+          if (result.isPresent()) banks = result.get();
           break;
         case "TYPE":
-          banks.addAllBanks(bankService.getAllByType(value));
+          result = bankService.getAllByType(value);
+          if (result.isPresent()) banks = result.get();
           break;
         case "IFSC":
-          banks.addAllBanks(bankService.getAllByIfsc(value));
+          result = bankService.getAllByIfsc(value);
+          if (result.isPresent()) banks = result.get();
+          break;
+        case "CCY":
+          result = bankService.getAllByCountryCode(value);
+          if (result.isPresent()) banks = result.get();
           break;
         default:
-          banks.addAllBanks(bankService.getBanks().getBanksList());
+          result = bankService.getAllBanks();
+          if (result.isPresent()) banks = result.get();
       }
     } catch (Exception e) {
       log.error("Failed to list {}: {} from crdb! ", field, value, e);
     }
-    return banks.build();
+    return banks;
   }
 
   @DeleteMapping("/banks/{ifsc}")
   public boolean deleteBank(@PathVariable("ifsc") String ifsc) {
     log.info("Received request to del bank for ifsc: {}", ifsc);
     return bankService.deleteBank(ifsc);
-  }
-
-  @DeleteMapping("/banks")
-  public boolean deleteBanks() {
-    log.info("Received request to del all banks");
-    return bankService.deleteBanks();
   }
 
   @GetMapping("/banks/backup")
@@ -117,7 +129,10 @@ public class BankController {
             .setCountryCode("IN")
             .build();
 
-    // bank.addBank(data);
-    bankService.addBanks(BankProto.BankList.newBuilder().addBanks(data).build());
+    BankProto.BankList.newBuilder()
+        .addBanks(data)
+        .build()
+        .getBanksList()
+        .forEach(bankService::addBank);
   }
 }

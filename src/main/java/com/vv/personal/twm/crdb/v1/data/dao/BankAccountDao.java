@@ -5,6 +5,7 @@ import com.vv.personal.twm.crdb.v1.data.entity.BankAccountEntity;
 import java.util.List;
 import java.util.Optional;
 import java.util.OptionalDouble;
+import java.util.UUID;
 
 /**
  * @author Vivek
@@ -12,11 +13,15 @@ import java.util.OptionalDouble;
  */
 public interface BankAccountDao {
 
-  boolean doesAccountExist(String id);
+  String getExternalId(String uuid);
+
+  Optional<UUID> getId(String externalId);
+
+  boolean doesAccountExist(String externalId);
 
   boolean addBankAccount(BankProto.BankAccount bankAccount);
 
-  Optional<BankProto.BankAccount> getBankAccount(String id);
+  Optional<BankProto.BankAccount> getBankAccount(String externalId);
 
   Optional<BankProto.BankAccounts> getAllBankAccounts();
 
@@ -26,11 +31,11 @@ public interface BankAccountDao {
 
   Optional<BankProto.BankAccounts> getAllBankAccountsByCcy(BankProto.CurrencyCode ccy);
 
-  boolean updateBankAccountBalance(String id, double amount);
+  boolean updateBankAccountBalance(String externalId, double amount);
 
-  OptionalDouble getBankAccountBalance(String id);
+  OptionalDouble getBankAccountBalance(String externalId);
 
-  boolean deleteBankAccount(String id);
+  boolean deleteBankAccount(String externalId);
 
   List<BankAccountEntity> getBankAccountsInEntityFormat();
 }

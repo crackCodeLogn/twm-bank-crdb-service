@@ -1,7 +1,7 @@
 package com.vv.personal.twm.crdb.v1.service;
 
 import com.vv.personal.twm.artifactory.generated.bank.BankProto;
-import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Vivek
@@ -10,21 +10,17 @@ import java.util.List;
 public interface BankService extends BackUpAndRestore {
   boolean addBank(BankProto.Bank bank);
 
-  int addBanks(BankProto.BankList bankList);
-
-  BankProto.Bank getBank(String ifsc);
-
-  BankProto.BankList getBanks();
+  Optional<BankProto.Bank> getBank(String ifsc);
 
   boolean deleteBank(String ifsc);
 
-  boolean deleteBanks();
+  Optional<BankProto.BankList> getAllBanks();
 
-  List<BankProto.Bank> getAllByName(String name);
+  Optional<BankProto.BankList> getAllByName(String name);
 
-  List<BankProto.Bank> getAllByType(String type);
+  Optional<BankProto.BankList> getAllByType(String type);
 
-  List<BankProto.Bank> getAllByIfsc(String ifsc);
+  Optional<BankProto.BankList> getAllByIfsc(String ifsc);
 
-  List<BankProto.Bank> getAllByCountryCode(String ccy);
+  Optional<BankProto.BankList> getAllByCountryCode(String ccy);
 }

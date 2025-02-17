@@ -55,32 +55,41 @@ class BankServiceAccountDaoImplIntegrationTest {
             .setIsActive(true)
             .setNote("Test Note")
             .setCcy(CAD)
+            .setExternalId(
+                BankHelperUtil.generateSha512Hash(bankAccountId1)) // sin but it is what it is
             .build();
+    // clear existing bank accounts for bank ifsc TESTB-001.
     bankAccountDao
         .getAllBankAccountsByMatchingIfsc("TESTB-001")
         .ifPresent(
-            accounts -> {
-              accounts
-                  .getAccountsList()
-                  .forEach(account -> bankAccountDao.deleteBankAccount(account.getId()));
-            });
-    bankAccountDao.deleteBankAccount(bankAccountId1);
-    assertTrue(bankService.deleteBank("TESTB-001"));
-    assertFalse(bankAccountDao.doesAccountExist(bankAccountId1));
+            accounts ->
+                accounts
+                    .getAccountsList()
+                    .forEach(account -> bankAccountDao.deleteBankAccount(account.getExternalId())));
+    String ext1 = bankAccount1.getExternalId();
+    bankAccountDao.deleteBankAccount(ext1); // should not be present anyways
+    assertTrue(bankService.deleteBank("TESTB-001")); // delete bank now
+
+    assertFalse(bankAccountDao.doesAccountExist(ext1));
     // this is supposed to fail because bank table does not contain the ifsc TESTB-001
     assertFalse(bankAccountDao.addBankAccount(bankAccount1));
 
     // insert test bank ifsc
     BankProto.Bank testBank =
-        BankProto.Bank.newBuilder().setIFSC("TESTB-001").setName("Test Bank 001").build();
+        BankProto.Bank.newBuilder()
+            .setIFSC("TESTB-001")
+            .setName("Test Bank 001")
+            .setExternalId(BankHelperUtil.generateSha512Hash("TESTB-001"))
+            .build();
     assertTrue(bankService.addBank(testBank));
 
     // this is now supposed to pass
     assertTrue(bankAccountDao.addBankAccount(bankAccount1));
     assertFalse(bankAccountDao.addBankAccount(bankAccount1)); // should fail as pkey already present
 
+    String externalId1 = bankAccountDao.getExternalId(bankAccountId1);
     Optional<BankProto.BankAccount> optionalBankAccount1 =
-        bankAccountDao.getBankAccount(bankAccountId1);
+        bankAccountDao.getBankAccount(externalId1);
     assertTrue(optionalBankAccount1.isPresent());
     BankProto.BankAccount bankAccountFromDb = optionalBankAccount1.get();
     System.out.println(bankAccountFromDb);
@@ -105,6 +114,7 @@ class BankServiceAccountDaoImplIntegrationTest {
             .setCcy(BankProto.CurrencyCode.INR)
             .build();
     assertTrue(bankAccountDao.addBankAccount(bankAccount2));
+    String externalId2 = bankAccountDao.getExternalId(bankAccountId2);
 
     String bankAccountId3 = UUID.randomUUID().toString();
     BankProto.BankAccount bankAccount3 =
@@ -124,6 +134,7 @@ class BankServiceAccountDaoImplIntegrationTest {
             .setCcy(BankProto.CurrencyCode.USD)
             .build();
     assertTrue(bankAccountDao.addBankAccount(bankAccount3));
+    String externalId3 = bankAccountDao.getExternalId(bankAccountId3);
 
     // test various get methods
     Optional<BankProto.BankAccounts> bankAccounts = bankAccountDao.getAllBankAccounts();
@@ -147,27 +158,27 @@ class BankServiceAccountDaoImplIntegrationTest {
     assertEquals(3, bankAccountsList3.get().getAccountsCount());
 
     // get balance
-    OptionalDouble optionalDouble = bankAccountDao.getBankAccountBalance(bankAccountId3);
+    OptionalDouble optionalDouble = bankAccountDao.getBankAccountBalance(externalId3);
     assertTrue(optionalDouble.isPresent());
     assertEquals(5.23, optionalDouble.getAsDouble());
 
     // update balances
-    assertTrue(bankAccountDao.updateBankAccountBalance(bankAccountId1, 10001.51));
-    optionalDouble = bankAccountDao.getBankAccountBalance(bankAccountId1);
+    assertTrue(bankAccountDao.updateBankAccountBalance(externalId1, 10001.51));
+    optionalDouble = bankAccountDao.getBankAccountBalance(externalId1);
     assertTrue(optionalDouble.isPresent());
     assertEquals(10001.51, optionalDouble.getAsDouble());
 
     // check newly added columns
     BankProto.BankAccount testBankAccount;
-    testBankAccount = bankAccountDao.getBankAccount(bankAccountId1).get();
+    testBankAccount = bankAccountDao.getBankAccount(externalId1).get();
     assertEquals(CAD, testBankAccount.getCcy());
     assertEquals("Test Note", testBankAccount.getNote());
 
-    testBankAccount = bankAccountDao.getBankAccount(bankAccountId2).get();
+    testBankAccount = bankAccountDao.getBankAccount(externalId2).get();
     assertEquals(INR, testBankAccount.getCcy());
     assertTrue(testBankAccount.getNote().isBlank());
 
-    testBankAccount = bankAccountDao.getBankAccount(bankAccountId3).get();
+    testBankAccount = bankAccountDao.getBankAccount(externalId3).get();
     assertEquals(USD, testBankAccount.getCcy());
     assertEquals("Test note 3", testBankAccount.getNote());
 
@@ -208,18 +219,19 @@ class BankServiceAccountDaoImplIntegrationTest {
             .setCcy(BankProto.CurrencyCode.USD)
             .build();
     assertTrue(bankAccountDao.addBankAccount(bankAccount4));
+    String externalId4 = bankAccountDao.getExternalId(bankAccountId4);
     Optional<BankProto.BankAccount> optionalBankAccount4 =
-        bankAccountDao.getBankAccount(bankAccountId4);
+        bankAccountDao.getBankAccount(externalId4);
     assertTrue(optionalBankAccount4.isPresent());
     assertEquals(
         Lists.newArrayList(BankProto.BankAccountType.TFSA, BankProto.BankAccountType.MKT),
         optionalBankAccount4.get().getBankAccountTypesList());
 
     // delete bank account
-    assertTrue(bankAccountDao.deleteBankAccount(bankAccountId1));
-    assertTrue(bankAccountDao.deleteBankAccount(bankAccountId2));
-    assertTrue(bankAccountDao.deleteBankAccount(bankAccountId3));
-    assertTrue(bankAccountDao.deleteBankAccount(bankAccountId4));
+    assertTrue(bankAccountDao.deleteBankAccount(externalId1));
+    assertTrue(bankAccountDao.deleteBankAccount(externalId2));
+    assertTrue(bankAccountDao.deleteBankAccount(externalId3));
+    assertTrue(bankAccountDao.deleteBankAccount(externalId4));
 
     // clean up
     assertTrue(bankService.deleteBank("TESTB-001"));

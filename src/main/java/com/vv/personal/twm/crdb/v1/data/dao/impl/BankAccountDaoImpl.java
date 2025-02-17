@@ -24,18 +24,30 @@ public class BankAccountDaoImpl implements BankAccountDao {
   private final BankAccountRepository bankAccountRepository;
 
   @Override
-  public boolean doesAccountExist(String id) {
+  public String getExternalId(String uuid) {
+    Optional<BankAccountEntity> bankAccountEntity =
+        bankAccountRepository.findById(UUID.fromString(uuid));
+    return bankAccountEntity.map(BankAccountEntity::getExternalId).orElse("");
+  }
+
+  @Override
+  public Optional<UUID> getId(String externalId) {
+    return getBankAccount(externalId).map(v -> UUID.fromString(v.getId()));
+  }
+
+  @Override
+  public boolean doesAccountExist(String externalId) {
     try {
-      return bankAccountRepository.existsById(getUUID(id));
+      return bankAccountRepository.existsByExternalId(externalId);
     } catch (Exception e) {
-      log.error("Failed to check bank account existence with id: {}", id, e);
+      log.error("Failed to check bank account existence with external id: {}", externalId, e);
     }
     return false;
   }
 
   @Override
   public boolean addBankAccount(BankProto.BankAccount bankAccount) {
-    if (doesAccountExist(bankAccount.getId())) {
+    if (doesAccountExist(bankAccount.getExternalId())) {
       log.warn("Account already exists with id {}", bankAccount.getId());
       return false;
     }
@@ -52,15 +64,15 @@ public class BankAccountDaoImpl implements BankAccountDao {
   }
 
   @Override
-  public Optional<BankProto.BankAccount> getBankAccount(String id) {
+  public Optional<BankProto.BankAccount> getBankAccount(String externalId) {
     try {
-      UUID uuid = getUUID(id);
-      Optional<BankAccountEntity> bankAccountOptional = bankAccountRepository.findById(uuid);
+      Optional<BankAccountEntity> bankAccountOptional =
+          bankAccountRepository.findByExternalId(externalId);
       if (bankAccountOptional.isPresent()) {
         return Optional.of(generateBankAccount(bankAccountOptional.get()));
       }
     } catch (Exception e) {
-      log.error("Failed to get bank account with id: {}", id, e);
+      log.error("Failed to get bank account with id: {}", externalId, e);
     }
     return Optional.empty();
   }
@@ -125,10 +137,10 @@ public class BankAccountDaoImpl implements BankAccountDao {
   }
 
   @Override
-  public boolean updateBankAccountBalance(String id, double amount) {
+  public boolean updateBankAccountBalance(String externalId, double amount) {
     try {
-      UUID uuid = getUUID(id);
-      Optional<BankAccountEntity> bankAccountEntityOptional = bankAccountRepository.findById(uuid);
+      Optional<BankAccountEntity> bankAccountEntityOptional =
+          bankAccountRepository.findByExternalId(externalId);
       if (bankAccountEntityOptional.isPresent()) {
         BankAccountEntity bankAccountEntity = bankAccountEntityOptional.get();
         bankAccountEntity.setBalance(amount);
@@ -136,28 +148,33 @@ public class BankAccountDaoImpl implements BankAccountDao {
         bankAccountRepository.saveAndFlush(bankAccountEntity);
         return true;
       } else {
-        log.error("No bank account found with id: {} to update balance to {}", id, amount);
+        log.error("No bank account found with id: {} to update balance to {}", externalId, amount);
       }
     } catch (Exception e) {
-      log.error("Failed to update bank account balance with id: {}", id, e);
+      log.error("Failed to update bank account balance with id: {}", externalId, e);
     }
     return false;
   }
 
   @Override
-  public OptionalDouble getBankAccountBalance(String id) {
-    return getBankAccount(id)
+  public OptionalDouble getBankAccountBalance(String externalId) {
+    return getBankAccount(externalId)
         .map(bankAccount -> OptionalDouble.of(bankAccount.getBalance()))
         .orElseGet(OptionalDouble::empty);
   }
 
   @Override
-  public boolean deleteBankAccount(String id) {
+  public boolean deleteBankAccount(String externalId) {
     try {
-      bankAccountRepository.deleteById(getUUID(id));
+      Optional<UUID> id = getId(externalId);
+      if (id.isEmpty()) {
+        log.warn("Bank account with external id {} not found", externalId);
+        return false;
+      }
+      bankAccountRepository.deleteById(id.get());
       return true;
     } catch (Exception e) {
-      log.error("Failed to delete bank account with id: {}", id, e);
+      log.error("Failed to delete bank account with id: {}", externalId, e);
     }
     return false;
   }
