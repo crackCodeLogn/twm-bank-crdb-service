@@ -124,6 +124,12 @@ Note: Fixed deposit is also known as
 
 ## Local Build
 
+#### Pre-requisites:
+
+1. Checkout the latest [libraries](#-personal-libraries) and build their jars for local maven repo (~/.m2)
+
+#### Command:
+
 > mvn clean install
 
 ---
