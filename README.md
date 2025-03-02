@@ -107,6 +107,24 @@ Note: Fixed deposit is also known as
 
 ---
 
-## Launch mechanism
+## Launch mechanism (local mode)
 
-1. 
+#### Pre-requisites:
+
+1. Start up local cockroachdb cluster
+2. Start up [twm-eureka](https://github.com/crackCodeLogn/twm-eureka-service)
+
+#### Launch script:
+
+1. Ensure the stable version is checked out (or latest if you are more brave)
+2. Run the [Local Build](#local-build) step if not already done, to generate the jar
+3. Fire up the script at '[twm-bank-crdb.sh](bin/twm-bank-crdb.sh)' using no args
+
+---
+
+## Local Build
+
+> mvn clean install
+
+---
+For questions or suggestions, please feel free to reach out to me at [v2k.verma@gmail.com](mailto:v2k.verma@gmail.com)
