@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS bank_account
     INSTITUTION_NUMBER VARCHAR(20)  NOT NULL,
     BALANCE            NUMERIC      NOT NULL DEFAULT '0.0',
     BANK_ACCOUNT_TYPES VARCHAR(100) NOT NULL,
-    META_DATA          VARCHAR(5000),
+    META_DATA          VARCHAR(5000) DEFAULT '',
     OVERDRAFT_BALANCE  NUMERIC      NOT NULL,
     INTEREST_RATE      NUMERIC      NOT NULL DEFAULT '0.0',
     IS_ACTIVE          BOOL         NOT NULL,
@@ -34,3 +34,5 @@ CREATE TABLE IF NOT EXISTS bank_account
 --
 -- alter table bank_account
 --     rename column external_id VARCHAR(512) DEFAULT '';
+
+-- alter table bank_account alter column META_DATA set default '';
