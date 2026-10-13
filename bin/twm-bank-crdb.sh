@@ -1,3 +1,4 @@
+#!/bin/zsh
 APP_NAME="twm-bank-crdb-service"
 JAVA_PARAM="-Xmx501m"
 

@@ -107,9 +107,32 @@ public class FixedDepositServiceImpl implements FixedDepositService {
 
   @Override
   public boolean expireNrFd(String fdNumber) {
-    String newFdNumber = fdNumber + "_exp";
+    String newFdNumber = getNewFdNumberForExpiringNrFd(fdNumber);
     return updateFixedDepositActiveStatus(fdNumber, false)
         && fixedDepositDao.expireNrFd(fdNumber, newFdNumber);
+  }
+
+  String getNewFdNumberForExpiringNrFd(String fdNumberToExpire) {
+    if (StringUtils.isEmpty(fdNumberToExpire) || fdNumberToExpire.isBlank())
+      throw new RuntimeException("fd number to expire cannot be empty");
+
+    String newFdNumber = fdNumberToExpire;
+    if (!fdNumberToExpire.matches(".*_exp[0-9]*")) { // first time fd getting expired
+      newFdNumber = fdNumberToExpire + "_exp";
+      if (getFixedDeposit(newFdNumber).getFdNumber().isEmpty()) return newFdNumber;
+    }
+
+    do {
+      int splitPoint = newFdNumber.indexOf("_exp");
+      int oldNumber;
+      try {
+        oldNumber = Integer.parseInt(newFdNumber.substring(splitPoint + 4));
+      } catch (NumberFormatException e) {
+        oldNumber = 1;
+      }
+      newFdNumber = String.format("%s_exp%d", newFdNumber.substring(0, splitPoint), oldNumber + 1);
+    } while (!getFixedDeposit(newFdNumber).getFdNumber().isEmpty());
+    return newFdNumber;
   }
 
   @Override
