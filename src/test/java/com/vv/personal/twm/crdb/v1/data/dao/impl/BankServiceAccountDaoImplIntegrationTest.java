@@ -61,11 +61,10 @@ class BankServiceAccountDaoImplIntegrationTest {
     // clear existing bank accounts for bank ifsc TESTB-001.
     bankAccountDao
         .getAllBankAccountsByMatchingIfsc("TESTB-001")
-        .ifPresent(
-            accounts ->
-                accounts
-                    .getAccountsList()
-                    .forEach(account -> bankAccountDao.deleteBankAccount(account.getExternalId())));
+        .ifPresent(accounts ->
+            accounts
+                .getAccountsList()
+                .forEach(account -> bankAccountDao.deleteBankAccount(account.getExternalId())));
     String ext1 = bankAccount1.getExternalId();
     bankAccountDao.deleteBankAccount(ext1); // should not be present anyways
     assertTrue(bankService.deleteBank("TESTB-001")); // delete bank now
@@ -232,6 +231,50 @@ class BankServiceAccountDaoImplIntegrationTest {
     assertTrue(bankAccountDao.deleteBankAccount(externalId2));
     assertTrue(bankAccountDao.deleteBankAccount(externalId3));
     assertTrue(bankAccountDao.deleteBankAccount(externalId4));
+
+    // clean up
+    assertTrue(bankService.deleteBank("TESTB-001"));
+  }
+
+  @Test
+  void testEmptyNoteInBankAccount() {
+    BankProto.Bank testBank =
+        BankProto.Bank.newBuilder()
+            .setIFSC("TESTB-001")
+            .setName("Test Bank 001")
+            .setExternalId(BankHelperUtil.generateSha512Hash("TESTB-001"))
+            .build();
+    assertTrue(bankService.addBank(testBank));
+
+    String bankAccountId = UUID.randomUUID().toString();
+    BankProto.BankAccount bankAccount =
+        BankProto.BankAccount.newBuilder()
+            .setId(bankAccountId)
+            .setBank(BankProto.Bank.newBuilder().setIFSC("TESTB-001"))
+            .setNumber("12345678902324322")
+            .setName("Sample 005")
+            .setTransitNumber("998")
+            .setInstitutionNumber("9998")
+            .setBalance(5.23)
+            .addAllBankAccountTypes(
+                Lists.newArrayList(BankProto.BankAccountType.TFSA, BankProto.BankAccountType.MKT))
+            .setOverdraftBalance(100)
+            .setInterestRate(1.5)
+            .setIsActive(true)
+            .setCcy(BankProto.CurrencyCode.USD)
+            .build();
+    assertTrue(bankAccountDao.addBankAccount(bankAccount));
+    Optional<BankProto.BankAccounts> bankAccounts = bankAccountDao.getAllBankAccounts();
+    assertTrue(bankAccounts.isPresent());
+    assertTrue(bankAccounts.get().getAccountsCount() >= 1);
+    Optional<BankProto.BankAccount> account =
+        bankAccounts.get().getAccountsList().stream()
+            .filter(v -> v.getBank().getIFSC().equals("TESTB-001"))
+            .findFirst();
+    assertTrue(account.isPresent());
+
+    // delete bank account
+    assertTrue(bankAccountDao.deleteBankAccount(account.get().getExternalId()));
 
     // clean up
     assertTrue(bankService.deleteBank("TESTB-001"));
