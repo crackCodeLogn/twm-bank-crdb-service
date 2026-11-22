@@ -4,6 +4,7 @@ spring:
   datasource:
     url: jdbc:postgresql://${CRDB_DB_HOST}:${CRDB_DB_PORT}/${CRDB_DB}
     username: ${CRDB_USERNAME}
+    password: ${CRDB_TWM_CRED}
   jpa:
     database: postgresql
   cloud:
@@ -27,3 +28,7 @@ feign:
       default:
         connectTimeout: 10000 #milliseconds
         readTimeout: 10000
+
+logging:
+  level:
+    root: info
